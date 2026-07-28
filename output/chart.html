@@ -4,110 +4,97 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SSS Breadth — 5 Day 20% Movers</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
 <style>
   :root {
-    --bg: #000;
-    --pane: #0a0a0a;
-    --grid: #1c1c1c;
-    --edge: #262626;
-    --text: #d8d8d8;
-    --dim: #6f6f6f;
-    --up: #22c55e;
-    --down: #ef4444;
+    --bg: #0b0b0d;
+    --pane: #0b0b0d;
+    --grid: #1a1a1e;
+    --edge: #26262c;
+    --text: #dcdce0;
+    --dim: #70707a;
+    --up: #26a65b;
+    --down: #e04c4c;
     --accent: #38bdf8;
   }
   * { box-sizing: border-box; }
+  html, body { height: 100%; }
   body {
     margin: 0;
     background: var(--bg);
     color: var(--text);
     font: 13px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;              /* page never scrolls; panes fill it */
   }
+
   header {
+    flex: none;
     display: flex;
     align-items: baseline;
     gap: 18px;
     flex-wrap: wrap;
-    padding: 10px 14px;
+    padding: 9px 14px;
     border-bottom: 1px solid var(--edge);
   }
   h1 {
-    margin: 0;
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: .04em;
-    color: var(--accent);
+    margin: 0; font-size: 14px; font-weight: 600;
+    letter-spacing: .04em; color: var(--accent);
   }
-  .stat { color: var(--dim); }
+  .stat { color: var(--dim); white-space: nowrap; }
   .stat b { color: var(--text); font-weight: 600; }
   .stat.up b { color: var(--up); }
   .stat.down b { color: var(--down); }
   .spacer { flex: 1; }
 
+  /* flex-basis:0 + flex-grow means grow values ARE the pixel heights,
+     and the three panes always exactly fill the space. No dead zone. */
+  #panes { flex: 1; min-height: 0; display: flex; flex-direction: column; }
   .pane {
     position: relative;
+    flex-grow: 340;
+    flex-basis: 0;
+    min-height: 60px;
     background: var(--pane);
-    padding: 4px 8px 6px;
-    min-height: 90px;
+    overflow: hidden;
   }
+  #p-up, #p-down { flex-grow: 150; }
   .pane-label {
-    position: absolute;
-    top: 6px;
-    left: 14px;
-    z-index: 2;
-    font-size: 11px;
-    letter-spacing: .06em;
-    text-transform: uppercase;
-    color: var(--dim);
-    pointer-events: none;
+    position: absolute; top: 5px; left: 12px; z-index: 3;
+    font-size: 10px; letter-spacing: .07em; text-transform: uppercase;
+    color: var(--dim); pointer-events: none;
+    text-shadow: 0 0 6px var(--bg), 0 0 6px var(--bg);
   }
-  .pane canvas { width: 100% !important; height: 100% !important; }
+  .chart-host { position: absolute; inset: 0; }
 
-  /* drag handle between panes */
   .grip {
-    height: 7px;
+    flex: none; height: 6px; cursor: ns-resize; position: relative;
     background: var(--bg);
     border-top: 1px solid var(--edge);
     border-bottom: 1px solid var(--edge);
-    cursor: ns-resize;
-    position: relative;
   }
   .grip::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 34px;
-    height: 1px;
-    transform: translate(-50%, -50%);
-    background: #3a3a3a;
+    content: ""; position: absolute; left: 50%; top: 50%;
+    width: 30px; height: 1px; transform: translate(-50%, -50%);
+    background: #3a3a42;
   }
   .grip:hover::after, .grip.active::after { background: var(--accent); }
   body.resizing { cursor: ns-resize; user-select: none; }
 
   footer {
-    display: flex;
-    gap: 6px;
-    align-items: center;
-    flex-wrap: wrap;
-    padding: 10px 14px 24px;
-    color: var(--dim);
-    font-size: 12px;
+    flex: none;
+    display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
+    padding: 7px 14px;
     border-top: 1px solid var(--edge);
+    color: var(--dim); font-size: 12px;
   }
   button {
-    background: transparent;
-    color: var(--dim);
-    border: 1px solid var(--edge);
-    border-radius: 2px;
-    padding: 4px 10px;
-    font: inherit;
-    font-size: 11px;
-    cursor: pointer;
+    background: transparent; color: var(--dim);
+    border: 1px solid var(--edge); border-radius: 2px;
+    padding: 3px 10px; font: inherit; font-size: 11px; cursor: pointer;
   }
-  button:hover { color: var(--text); border-color: #3a3a3a; }
+  button:hover { color: var(--text); border-color: #3d3d46; }
   button[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); }
   button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   #msg { padding: 40px 14px; color: var(--dim); }
@@ -129,16 +116,19 @@
 <div id="msg">Loading history…</div>
 
 <div id="panes" hidden>
-  <div class="pane" id="p-spy" style="height:340px">
-    <span class="pane-label">SPY daily</span><canvas id="c-spy"></canvas>
+  <div class="pane" id="p-spy">
+    <span class="pane-label">SPY daily</span>
+    <div class="chart-host" id="h-spy"></div>
   </div>
   <div class="grip" data-above="p-spy" data-below="p-up"></div>
-  <div class="pane" id="p-up" style="height:170px">
-    <span class="pane-label">Stocks up 20% in 5 days</span><canvas id="c-up"></canvas>
+  <div class="pane" id="p-up">
+    <span class="pane-label">Up 20% in 5 days</span>
+    <div class="chart-host" id="h-up"></div>
   </div>
   <div class="grip" data-above="p-up" data-below="p-down"></div>
-  <div class="pane" id="p-down" style="height:170px">
-    <span class="pane-label">Stocks down 20% in 5 days</span><canvas id="c-down"></canvas>
+  <div class="pane" id="p-down">
+    <span class="pane-label">Down 20% in 5 days</span>
+    <div class="chart-host" id="h-down"></div>
   </div>
 </div>
 
@@ -154,242 +144,213 @@
 </footer>
 
 <script>
+const LWC = window.LightweightCharts;
 const CSS = getComputedStyle(document.documentElement);
 const col = n => CSS.getPropertyValue(n).trim();
 
-let ALL = [];
+const msg = document.getElementById('msg');
+
+if (!LWC) {
+  msg.textContent =
+    'Charting library failed to load — check your connection, or the ' +
+    'unpkg.com CDN may be blocked on this network.';
+}
+
+let ROWS = [];
+let candleSeries, upSeries, downSeries;
 let charts = [];
+let syncing = false;
 
 /* ---------- data ---------- */
 
-function num(v) {
+const num = v => {
   if (v === undefined || v === null || v === '') return null;
   const n = parseFloat(v);
   return Number.isFinite(n) ? n : null;
-}
+};
 
 function parseCSV(text) {
   const lines = text.trim().split(/\r?\n/);
   const head = lines[0].split(',');
   return lines.slice(1).map(line => {
     const cells = line.split(',');
-    const row = {};
-    head.forEach((h, i) => row[h] = cells[i]);
+    const r = {};
+    head.forEach((h, i) => r[h] = cells[i]);
     return {
-      date: row.as_of,
-      o: num(row.spy_open),
-      h: num(row.spy_high),
-      l: num(row.spy_low),
-      c: num(row.spy_close),
-      up: parseInt(row.up_count, 10) || 0,
-      down: parseInt(row.down_count, 10) || 0,
-      net: parseInt(row.net, 10) || 0,
+      time: r.as_of,
+      open: num(r.spy_open), high: num(r.spy_high),
+      low: num(r.spy_low), close: num(r.spy_close),
+      up: parseInt(r.up_count, 10) || 0,
+      down: parseInt(r.down_count, 10) || 0,
+      net: parseInt(r.net, 10) || 0,
     };
-  }).filter(r => r.date);
+  }).filter(r => r.time).sort((a, b) => a.time.localeCompare(b.time));
 }
 
-/* ---------- axes shared across panes so columns line up ---------- */
+/* ---------- chart construction ---------- */
 
-function xAxis(labels, showTicks) {
+// minimumWidth keeps every price scale the same width, which is what
+// actually makes the three panes line up column for column.
+function baseOptions(showTime) {
   return {
-    type: 'category',
-    labels,
-    grid: { color: col('--grid'), drawTicks: false },
-    border: { color: col('--edge') },
-    ticks: {
-      display: showTicks,
-      color: col('--dim'),
-      font: { family: 'ui-monospace, monospace', size: 10 },
-      maxRotation: 0,
-      autoSkipPadding: 40,
-      callback(v) {
-        const d = this.getLabelForValue(v);
-        return d ? d.slice(5) : '';
-      },
+    autoSize: true,
+    layout: {
+      background: { type: 'solid', color: col('--pane') },
+      textColor: col('--dim'),
+      fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+      fontSize: 10,
     },
+    grid: {
+      vertLines: { color: col('--grid') },
+      horzLines: { color: col('--grid') },
+    },
+    rightPriceScale: {
+      borderColor: col('--edge'),
+      minimumWidth: 68,
+      scaleMargins: { top: 0.12, bottom: 0.08 },
+    },
+    timeScale: {
+      borderColor: col('--edge'),
+      visible: showTime,
+      rightOffset: 2,
+      barSpacing: 6,
+    },
+    crosshair: {
+      mode: LWC.CrosshairMode.Normal,
+      vertLine: { color: '#4a4a55', width: 1, style: 3, labelBackgroundColor: '#2a2a32' },
+      horzLine: { color: '#4a4a55', width: 1, style: 3, labelBackgroundColor: '#2a2a32' },
+    },
+    handleScroll: true,
+    handleScale: true,
   };
 }
 
-function yAxis(extra = {}) {
-  return Object.assign({
-    position: 'right',
-    grid: { color: col('--grid'), drawTicks: false },
-    border: { display: false },
-    ticks: {
-      color: col('--dim'),
-      font: { family: 'ui-monospace, monospace', size: 10 },
-      maxTicksLimit: 6,
-      padding: 6,
-    },
-  }, extra);
-}
+function build() {
+  const spy = LWC.createChart(document.getElementById('h-spy'), baseOptions(false));
+  const up = LWC.createChart(document.getElementById('h-up'), baseOptions(false));
+  const down = LWC.createChart(document.getElementById('h-down'), baseOptions(true));
+  charts = [spy, up, down];
 
-const baseOpts = {
-  responsive: true,
-  maintainAspectRatio: false,
-  animation: false,
-  interaction: { mode: 'index', intersect: false },
-  layout: { padding: { top: 22 } },
-  plugins: {
-    legend: { display: false },
-    tooltip: {
-      backgroundColor: '#111',
-      borderColor: col('--edge'),
-      borderWidth: 1,
-      titleColor: col('--text'),
-      bodyColor: col('--text'),
-      titleFont: { family: 'ui-monospace, monospace', size: 11 },
-      bodyFont: { family: 'ui-monospace, monospace', size: 11 },
-      displayColors: false,
-      padding: 8,
-    },
-  },
-};
-
-/* ---------- candles, drawn as two overlaid floating-bar sets ---------- */
-
-function buildCandles(rows) {
-  const lows = rows.map(r => r.l).filter(v => v !== null);
-  const highs = rows.map(r => r.h).filter(v => v !== null);
-  const span = (Math.max(...highs) - Math.min(...lows)) || 1;
-  const eps = span * 0.0008;   // keeps a doji from vanishing entirely
-
-  const colors = rows.map(r =>
-    (r.c !== null && r.o !== null && r.c < r.o) ? col('--down') : col('--up'));
-
-  const wick = rows.map(r =>
-    (r.l === null || r.h === null) ? null : [r.l, r.h]);
-
-  const body = rows.map(r => {
-    if (r.o === null || r.c === null) return null;
-    let lo = Math.min(r.o, r.c), hi = Math.max(r.o, r.c);
-    if (hi - lo < eps) { lo -= eps / 2; hi += eps / 2; }
-    return [lo, hi];
+  candleSeries = spy.addCandlestickSeries({
+    upColor: col('--up'),
+    downColor: col('--down'),
+    borderUpColor: col('--up'),
+    borderDownColor: col('--down'),
+    wickUpColor: col('--up'),
+    wickDownColor: col('--down'),
+    priceLineVisible: false,
+    lastValueVisible: true,
   });
 
-  return { wick, body, colors };
+  upSeries = up.addHistogramSeries({
+    color: col('--up'),
+    priceLineVisible: false,
+    priceFormat: { type: 'volume', precision: 0, minMove: 1 },
+  });
+
+  downSeries = down.addHistogramSeries({
+    color: col('--down'),
+    priceLineVisible: false,
+    priceFormat: { type: 'volume', precision: 0, minMove: 1 },
+  });
+
+  // pan/zoom one pane, all three follow
+  charts.forEach(src => {
+    src.timeScale().subscribeVisibleLogicalRangeChange(range => {
+      if (syncing || !range) return;
+      syncing = true;
+      charts.forEach(t => {
+        if (t !== src) t.timeScale().setVisibleLogicalRange(range);
+      });
+      syncing = false;
+    });
+  });
+
+  // one crosshair across all three panes
+  charts.forEach(src => {
+    src.subscribeCrosshairMove(param => {
+      if (syncing) return;
+      syncing = true;
+      if (!param.time) {
+        charts.forEach(t => { if (t !== src) t.clearCrosshairPosition(); });
+      } else {
+        const row = ROWS.find(r => r.time === param.time);
+        charts.forEach(t => {
+          if (t === src) return;
+          const s = t === charts[0] ? candleSeries
+                  : t === charts[1] ? upSeries : downSeries;
+          const v = t === charts[0] ? (row && row.close)
+                  : t === charts[1] ? (row && row.up) : (row && row.down);
+          if (v != null) t.setCrosshairPosition(v, param.time, s);
+        });
+        readout(row);
+      }
+      syncing = false;
+    });
+  });
 }
 
-function render(rows) {
-  charts.forEach(c => c.destroy());
-  charts = [];
+/* ---------- header readout ---------- */
 
-  const labels = rows.map(r => r.date);
-  const { wick, body, colors } = buildCandles(rows);
-  const hasOHLC = body.some(v => v !== null);
-
-  charts.push(new Chart(document.getElementById('c-spy'), {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [
-        {
-          data: wick,
-          backgroundColor: colors,
-          grouped: false,
-          barPercentage: 0.14,
-          categoryPercentage: 0.92,
-          borderWidth: 0,
-        },
-        {
-          data: body,
-          backgroundColor: colors,
-          grouped: false,
-          barPercentage: 0.72,
-          categoryPercentage: 0.92,
-          borderWidth: 0,
-        },
-      ],
-    },
-    options: {
-      ...baseOpts,
-      scales: {
-        x: xAxis(labels, false),
-        y: yAxis({ ticks: {
-          color: col('--dim'),
-          font: { family: 'ui-monospace, monospace', size: 10 },
-          maxTicksLimit: 6,
-          padding: 6,
-          callback: v => v.toFixed(0),
-        } }),
-      },
-      plugins: {
-        ...baseOpts.plugins,
-        tooltip: {
-          ...baseOpts.plugins.tooltip,
-          filter: item => item.datasetIndex === 1,
-          callbacks: {
-            label(ctx) {
-              const r = rows[ctx.dataIndex];
-              if (r.o === null) return 'no price data';
-              return ['O ' + r.o, 'H ' + r.h, 'L ' + r.l, 'C ' + r.c];
-            },
-          },
-        },
-      },
-    },
-  }));
-
-  const hist = (canvasId, key, color, label, showTicks) =>
-    new Chart(document.getElementById(canvasId), {
-      type: 'bar',
-      data: {
-        labels,
-        datasets: [{
-          data: rows.map(r => r[key]),
-          backgroundColor: color,
-          borderWidth: 0,
-          barPercentage: 1,
-          categoryPercentage: 0.86,
-        }],
-      },
-      options: {
-        ...baseOpts,
-        scales: {
-          x: xAxis(labels, showTicks),
-          y: yAxis({ beginAtZero: true }),
-        },
-        plugins: {
-          ...baseOpts.plugins,
-          tooltip: {
-            ...baseOpts.plugins.tooltip,
-            callbacks: { label: c => label + '  ' + c.parsed.y },
-          },
-        },
-      },
-    });
-
-  charts.push(hist('c-up', 'up', col('--up'), 'UP', false));
-  charts.push(hist('c-down', 'down', col('--down'), 'DOWN', true));
-
-  const last = rows[rows.length - 1];
-  document.getElementById('s-date').textContent = last.date;
-  document.getElementById('s-spy').textContent = last.c ?? '—';
-  document.getElementById('s-up').textContent = last.up;
-  document.getElementById('s-down').textContent = last.down;
+function readout(row) {
+  if (!row) return;
+  document.getElementById('s-date').textContent = row.time;
+  document.getElementById('s-spy').textContent = row.close ?? '—';
+  document.getElementById('s-up').textContent = row.up;
+  document.getElementById('s-down').textContent = row.down;
   document.getElementById('s-net').textContent =
-    (last.net > 0 ? '+' : '') + last.net;
+    (row.net > 0 ? '+' : '') + row.net;
+}
+
+/* ---------- load data into series ---------- */
+
+function setData(rows) {
+  const candles = rows
+    .filter(r => r.open !== null && r.high !== null &&
+                 r.low !== null && r.close !== null)
+    .map(r => ({ time: r.time, open: r.open, high: r.high,
+                 low: r.low, close: r.close }));
+
+  candleSeries.setData(candles);
+  upSeries.setData(rows.map(r => ({ time: r.time, value: r.up })));
+  downSeries.setData(rows.map(r => ({ time: r.time, value: r.down })));
+
+  readout(rows[rows.length - 1]);
   document.getElementById('s-sessions').textContent =
-    rows.length + ' SESSIONS' + (hasOHLC ? '' : ' · NO OHLC — RE-RUN BACKFILL');
+    rows.length + ' SESSIONS' +
+    (candles.length ? '' : ' · NO OHLC — RE-RUN BACKFILL');
+}
+
+function applyRange(days) {
+  const n = ROWS.length;
+  const from = days > 0 ? Math.max(0, n - days) : 0;
+  syncing = true;
+  charts.forEach(c =>
+    c.timeScale().setVisibleLogicalRange({ from, to: n - 1 }));
+  syncing = false;
 }
 
 /* ---------- resizable panes ---------- */
 
-const LAYOUT_KEY = 'sss-pane-heights';
-const MIN_H = 90;
+const LAYOUT_KEY = 'sss-pane-flex';
+const MIN_H = 60;
+const DEFAULTS = { 'p-spy': 340, 'p-up': 150, 'p-down': 150 };
 
 function saveLayout() {
-  const h = {};
-  document.querySelectorAll('.pane').forEach(p => h[p.id] = p.offsetHeight);
-  try { localStorage.setItem(LAYOUT_KEY, JSON.stringify(h)); } catch (e) {}
+  const out = {};
+  Object.keys(DEFAULTS).forEach(id => {
+    out[id] = document.getElementById(id).offsetHeight;
+  });
+  try { localStorage.setItem(LAYOUT_KEY, JSON.stringify(out)); } catch (e) {}
 }
 
 function loadLayout() {
   try {
-    const h = JSON.parse(localStorage.getItem(LAYOUT_KEY) || '{}');
-    Object.entries(h).forEach(([id, px]) => {
+    const saved = JSON.parse(localStorage.getItem(LAYOUT_KEY) || 'null');
+    if (!saved) return;
+    Object.entries(saved).forEach(([id, px]) => {
       const el = document.getElementById(id);
-      if (el && px >= MIN_H) el.style.height = px + 'px';
+      if (el && px >= MIN_H) el.style.flexGrow = px;
     });
   } catch (e) {}
 }
@@ -402,10 +363,8 @@ document.addEventListener('pointerdown', e => {
   const above = document.getElementById(grip.dataset.above);
   const below = document.getElementById(grip.dataset.below);
   drag = {
-    grip, above, below,
-    y: e.clientY,
-    hAbove: above.offsetHeight,
-    hBelow: below.offsetHeight,
+    grip, above, below, y: e.clientY,
+    hAbove: above.offsetHeight, hBelow: below.offsetHeight,
   };
   grip.classList.add('active');
   grip.setPointerCapture(e.pointerId);
@@ -414,15 +373,12 @@ document.addEventListener('pointerdown', e => {
 
 document.addEventListener('pointermove', e => {
   if (!drag) return;
-  const dy = e.clientY - drag.y;
-  // grow one pane, shrink its neighbour, so total height stays put
-  const a = Math.max(MIN_H, drag.hAbove + dy);
-  const b = Math.max(MIN_H, drag.hBelow - dy);
-  if (a === MIN_H && drag.hAbove + dy < MIN_H) return;
-  if (b === MIN_H && drag.hBelow - dy < MIN_H) return;
-  drag.above.style.height = a + 'px';
-  drag.below.style.height = b + 'px';
-  charts.forEach(c => c.resize());
+  let dy = e.clientY - drag.y;
+  dy = Math.max(dy, MIN_H - drag.hAbove);
+  dy = Math.min(dy, drag.hBelow - MIN_H);
+  // flex-basis is 0, so grow values behave as pixel heights
+  drag.above.style.flexGrow = drag.hAbove + dy;
+  drag.below.style.flexGrow = drag.hBelow - dy;
 });
 
 document.addEventListener('pointerup', () => {
@@ -430,24 +386,15 @@ document.addEventListener('pointerup', () => {
   drag.grip.classList.remove('active');
   document.body.classList.remove('resizing');
   drag = null;
-  document.body.offsetHeight;
-  charts.forEach(c => c.resize());
   saveLayout();
 });
 
 document.getElementById('reset-layout').addEventListener('click', () => {
-  document.getElementById('p-spy').style.height = '340px';
-  document.getElementById('p-up').style.height = '170px';
-  document.getElementById('p-down').style.height = '170px';
+  Object.entries(DEFAULTS).forEach(([id, g]) => {
+    document.getElementById(id).style.flexGrow = g;
+  });
   try { localStorage.removeItem(LAYOUT_KEY); } catch (e) {}
-  charts.forEach(c => c.resize());
 });
-
-/* ---------- range buttons ---------- */
-
-function applyRange(days) {
-  render(days > 0 ? ALL.slice(-days) : ALL);
-}
 
 document.getElementById('controls').addEventListener('click', e => {
   const btn = e.target.closest('button[data-days]');
@@ -459,25 +406,29 @@ document.getElementById('controls').addEventListener('click', e => {
 
 /* ---------- go ---------- */
 
-fetch('history.csv?t=' + Date.now())
-  .then(r => {
-    if (!r.ok) throw new Error('history.csv returned ' + r.status);
-    return r.text();
-  })
-  .then(text => {
-    ALL = parseCSV(text);
-    if (!ALL.length) throw new Error('history.csv has no data rows yet');
-    document.getElementById('msg').hidden = true;
-    document.getElementById('panes').hidden = false;
-    document.getElementById('controls').hidden = false;
-    loadLayout();
-    applyRange(0);
-  })
-  .catch(err => {
-    document.getElementById('msg').textContent =
-      'Could not load history.csv — ' + err.message +
-      '. Make sure this page sits in the same folder as history.csv.';
-  });
+if (LWC) {
+  fetch('history.csv?t=' + Date.now())
+    .then(r => {
+      if (!r.ok) throw new Error('history.csv returned ' + r.status);
+      return r.text();
+    })
+    .then(text => {
+      ROWS = parseCSV(text);
+      if (!ROWS.length) throw new Error('history.csv has no data rows yet');
+      msg.hidden = true;
+      document.getElementById('panes').hidden = false;
+      document.getElementById('controls').hidden = false;
+      loadLayout();
+      build();
+      setData(ROWS);
+      applyRange(0);
+    })
+    .catch(err => {
+      msg.textContent =
+        'Could not load history.csv — ' + err.message +
+        '. Make sure this page sits in the same folder as history.csv.';
+    });
+}
 </script>
 </body>
 </html>
