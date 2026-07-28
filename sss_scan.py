@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-SSS Study -- nightly breadth scan.  (v3)
+SSS Study -- nightly breadth scan.  (v4)
 
-Runs TWO scans against the same six sessions of data:
+Runs TWO scans against the same sessions of data:
 
     UP:    c/c5 >= 1.20   (up 20% or more over 5 trading days)
     DOWN:  c/c5 <= 0.80   (down 20% or more over 5 trading days)
@@ -14,14 +14,20 @@ Both share the same filters:
 Universe: US common stocks + ADRs.
 Data: Polygon.io grouped daily aggregates, previous trading day.
 
+v4 changes:
+  - records SPY's close in history.csv so the chart has a price line
+  - BACKFILL_DAYS env var computes breadth for past dates in one run
+
 Outputs to output/:
     latest_up.csv     the up 20% names
     latest_down.csv   the down 20% names
     latest.json       both lists plus the breadth summary
-    history.csv       one row per night: date, up count, down count, ratio
+    history.csv       one row per session: date, SPY close, up, down, net
 
 Env:
     POLYGON_API_KEY   required
+    BACKFILL_DAYS     optional. Set to e.g. 120 to rebuild history from
+                      scratch across the last 120 trading days, then unset.
 """
 
 import os
@@ -40,18 +46,20 @@ if not API_KEY:
 BASE = "https://api.polygon.io"
 
 # --- scan parameters -------------------------------------------------
-UP_RATIO = 1.20          # up 20% or more
-DOWN_RATIO = 0.80        # down 20% or more
-LOOKBACK_BARS = 5        # c5 = close 5 bars ago
-MIN_VOL_WINDOW = 3       # minimum volume over last N sessions
+UP_RATIO = 1.20
+DOWN_RATIO = 0.80
+LOOKBACK_BARS = 5
+MIN_VOL_WINDOW = 3
 MIN_VOL = 100_000
 MIN_PRICE = 5.00
-VOL_OFFSET = 0           # 0 = include most recent bar
-                         # 1 = exclude it (matches TC2000 minv3.1)
+VOL_OFFSET = 0
 UNIVERSE_TYPES = ("CS", "ADRC")
+BENCHMARK = "SPY"
 
-START_DAYS_BACK = 1      # start at previous session, not today
-SLEEP_BETWEEN_CALLS = 13  # free tier is 5 requests/min
+START_DAYS_BACK = 1
+SLEEP_BETWEEN_CALLS = 13
+
+BACKFILL_DAYS = int(os.environ.get("BACKFILL_DAYS", "0"))
 
 
 class NotAuthorized(Exception):
@@ -107,12 +115,14 @@ def load_universe():
 
 
 def load_sessions(n_needed):
+    """Walk backward collecting grouped daily bars. Returns oldest -> newest."""
     sessions = []
     day = dt.date.today() - dt.timedelta(days=START_DAYS_BACK)
     probes = 0
     unauthorized_days = 0
+    max_probes = n_needed * 2 + 20
 
-    while len(sessions) < n_needed and probes < 25:
+    while len(sessions) < n_needed and probes < max_probes:
         probes += 1
 
         if day.weekday() < 5:
@@ -122,7 +132,9 @@ def load_sessions(n_needed):
                 results = data.get("results") or []
                 if results:
                     sessions.append((day, {row["T"]: row for row in results}))
-                    sys.stderr.write(f"  {day}: {len(results)} tickers\n")
+                    sys.stderr.write(
+                        f"  {day}: {len(results)} tickers "
+                        f"({len(sessions)}/{n_needed})\n")
                 else:
                     sys.stderr.write(f"  {day}: no data (holiday?)\n")
             except NotAuthorized as e:
@@ -146,21 +158,12 @@ def load_sessions(n_needed):
     return sessions
 
 
-def run_scans():
-    n_needed = LOOKBACK_BARS + 1 + VOL_OFFSET
+def scan_one_day(universe, sessions, idx):
+    """Compute breadth for sessions[idx]. Needs LOOKBACK_BARS prior sessions."""
+    current_date, current_bars = sessions[idx]
+    _, prior_bars = sessions[idx - LOOKBACK_BARS]
 
-    sys.stderr.write("Loading universe...\n")
-    universe = load_universe()
-    sys.stderr.write(f"  {len(universe)} common stocks + ADRs\n")
-
-    sys.stderr.write(f"Loading {n_needed} sessions...\n")
-    sessions = load_sessions(n_needed)
-
-    idx_current = len(sessions) - 1
-    current_date, current_bars = sessions[idx_current]
-    _, prior_bars = sessions[idx_current - LOOKBACK_BARS]
-
-    vol_end = len(sessions) - VOL_OFFSET
+    vol_end = idx + 1 - VOL_OFFSET
     vol_sessions = sessions[vol_end - MIN_VOL_WINDOW:vol_end]
 
     up_hits, down_hits = [], []
@@ -174,14 +177,12 @@ def run_scans():
         c, c5 = cur.get("c"), pri.get("c")
         if not c or not c5 or c5 <= 0:
             continue
-
-        # price and volume filters apply to BOTH directions
         if c < MIN_PRICE:
             continue
 
         ratio = c / c5
         if UP_RATIO > ratio > DOWN_RATIO:
-            continue  # neither scan
+            continue
 
         vols, ok = [], True
         for _, bars in vol_sessions:
@@ -208,7 +209,10 @@ def run_scans():
             down_hits.append(row)
 
     up_hits.sort(key=lambda h: h["pct_change_5d"], reverse=True)
-    down_hits.sort(key=lambda h: h["pct_change_5d"])  # most negative first
+    down_hits.sort(key=lambda h: h["pct_change_5d"])
+
+    spy = current_bars.get(BENCHMARK)
+    spy_close = round(spy["c"], 2) if spy else None
 
     up_n, down_n = len(up_hits), len(down_hits)
     total = up_n + down_n
@@ -217,6 +221,7 @@ def run_scans():
         "scan": "SSS Study 20% Breadth",
         "as_of": current_date.isoformat(),
         "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+        "spy_close": spy_close,
         "criteria": {
             "up_ratio": UP_RATIO,
             "down_ratio": DOWN_RATIO,
@@ -230,9 +235,7 @@ def run_scans():
             "up_count": up_n,
             "down_count": down_n,
             "net": up_n - down_n,
-            # share of the 20% movers that are to the upside, 0.0 - 1.0
             "up_share": round(up_n / total, 4) if total else None,
-            # classic ratio; None when there are no down names
             "up_down_ratio": round(up_n / down_n, 2) if down_n else None,
         },
         "up_count": up_n,
@@ -244,6 +247,8 @@ def run_scans():
 
 FIELDS = ["ticker", "close", "close_5d_ago", "pct_change_5d",
           "volume", "min_vol_3d"]
+HIST_FIELDS = ["as_of", "spy_close", "up_count", "down_count",
+               "net", "up_share", "up_down_ratio"]
 
 
 def write_csv(path, rows):
@@ -253,47 +258,81 @@ def write_csv(path, rows):
         w.writerows(rows)
 
 
-def append_history(out):
-    """One row per trading day. Skips dates already recorded."""
+def hist_row(out):
+    b = out["breadth"]
+    return {
+        "as_of": out["as_of"],
+        "spy_close": out["spy_close"],
+        "up_count": b["up_count"],
+        "down_count": b["down_count"],
+        "net": b["net"],
+        "up_share": b["up_share"],
+        "up_down_ratio": b["up_down_ratio"],
+    }
+
+
+def merge_history(new_rows):
+    """Merge rows into history.csv, keyed by date. Newest date wins."""
     path = "output/history.csv"
-    seen = set()
+    by_date = {}
+
     if os.path.exists(path):
         with open(path) as f:
             for row in csv.DictReader(f):
-                seen.add(row["as_of"])
+                by_date[row["as_of"]] = {k: row.get(k, "") for k in HIST_FIELDS}
 
-    if out["as_of"] in seen:
-        sys.stderr.write(f"history already has {out['as_of']}, skipping\n")
-        return
+    for row in new_rows:
+        by_date[row["as_of"]] = row
 
-    b = out["breadth"]
-    new = not os.path.exists(path)
-    with open(path, "a", newline="") as f:
-        w = csv.writer(f)
-        if new:
-            w.writerow(["as_of", "up_count", "down_count", "net",
-                        "up_share", "up_down_ratio"])
-        w.writerow([out["as_of"], b["up_count"], b["down_count"],
-                    b["net"], b["up_share"], b["up_down_ratio"]])
+    with open(path, "w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=HIST_FIELDS)
+        w.writeheader()
+        for d in sorted(by_date):
+            w.writerow(by_date[d])
+
+    return len(by_date)
 
 
 def main():
-    out = run_scans()
     os.makedirs("output", exist_ok=True)
 
+    n_days = max(BACKFILL_DAYS, 1)
+    n_needed = n_days + LOOKBACK_BARS + VOL_OFFSET
+
+    sys.stderr.write("Loading universe...\n")
+    universe = load_universe()
+    sys.stderr.write(f"  {len(universe)} common stocks + ADRs\n")
+
+    if BACKFILL_DAYS:
+        sys.stderr.write(
+            f"BACKFILL MODE: {BACKFILL_DAYS} days "
+            f"({n_needed} sessions, roughly {n_needed * SLEEP_BETWEEN_CALLS // 60} min)\n")
+
+    sys.stderr.write(f"Loading {n_needed} sessions...\n")
+    sessions = load_sessions(n_needed)
+
+    # scan every day that has enough history behind it
+    first = LOOKBACK_BARS + VOL_OFFSET
+    results = [scan_one_day(universe, sessions, i)
+               for i in range(first, len(sessions))]
+
+    latest = results[-1]
+
     with open("output/latest.json", "w") as f:
-        json.dump(out, f, indent=2)
+        json.dump(latest, f, indent=2)
 
-    write_csv("output/latest_up.csv", out["up"])
-    write_csv("output/latest_down.csv", out["down"])
-    append_history(out)
+    write_csv("output/latest_up.csv", latest["up"])
+    write_csv("output/latest_down.csv", latest["down"])
 
-    b = out["breadth"]
+    total = merge_history([hist_row(r) for r in results])
+
+    b = latest["breadth"]
     sys.stderr.write(
-        f"\nAs of {out['as_of']}:\n"
+        f"\nAs of {latest['as_of']} (SPY {latest['spy_close']}):\n"
         f"  up 20%+   : {b['up_count']}\n"
         f"  down 20%+ : {b['down_count']}\n"
         f"  net       : {b['net']:+d}\n"
+        f"  history   : {total} sessions on file\n"
     )
 
 
