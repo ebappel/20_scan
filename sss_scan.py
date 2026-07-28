@@ -1,16 +1,24 @@
 #!/usr/bin/env python3
 """
-SSS Study 20% plus Bullish -- nightly scan.  (v2)
+SSS Study -- nightly breadth scan.  (v3)
 
-Replicates the TC2000 pre-scan condition:
-    c/c5 >= 1.2  and  minv3 > 100000  and  c >= 5
-against a universe of US common stocks + ADRs.
+Runs TWO scans against the same six sessions of data:
 
-v2 changes:
-  - starts the session walk at START_DAYS_BACK (default 1) instead of today,
-    because free Polygon plans are not entitled to the current session
-  - prints the API's actual error message instead of a bare HTTP status
-  - skips a NOT_AUTHORIZED date and keeps walking back rather than dying
+    UP:    c/c5 >= 1.20   (up 20% or more over 5 trading days)
+    DOWN:  c/c5 <= 0.80   (down 20% or more over 5 trading days)
+
+Both share the same filters:
+    min(volume over last 3 sessions) > 100,000
+    close >= $5
+
+Universe: US common stocks + ADRs.
+Data: Polygon.io grouped daily aggregates, previous trading day.
+
+Outputs to output/:
+    latest_up.csv     the up 20% names
+    latest_down.csv   the down 20% names
+    latest.json       both lists plus the breadth summary
+    history.csv       one row per night: date, up count, down count, ratio
 
 Env:
     POLYGON_API_KEY   required
@@ -18,6 +26,7 @@ Env:
 
 import os
 import sys
+import csv
 import json
 import time
 import datetime as dt
@@ -31,19 +40,17 @@ if not API_KEY:
 BASE = "https://api.polygon.io"
 
 # --- scan parameters -------------------------------------------------
-GAIN_RATIO = 1.20        # c / c5 >= 1.20   (up 20% over 5 trading days)
+UP_RATIO = 1.20          # up 20% or more
+DOWN_RATIO = 0.80        # down 20% or more
 LOOKBACK_BARS = 5        # c5 = close 5 bars ago
 MIN_VOL_WINDOW = 3       # minimum volume over last N sessions
 MIN_VOL = 100_000
 MIN_PRICE = 5.00
-VOL_OFFSET = 0           # 0 = include most recent bar (post-close run)
+VOL_OFFSET = 0           # 0 = include most recent bar
                          # 1 = exclude it (matches TC2000 minv3.1)
 UNIVERSE_TYPES = ("CS", "ADRC")
 
-# Free plans aren't entitled to the current session. 1 = start at yesterday.
-# If you still get NOT_AUTHORIZED, raise this to 2.
-START_DAYS_BACK = 1
-
+START_DAYS_BACK = 1      # start at previous session, not today
 SLEEP_BETWEEN_CALLS = 13  # free tier is 5 requests/min
 
 
@@ -52,7 +59,6 @@ class NotAuthorized(Exception):
 
 
 def get(url, params=None):
-    """GET with retries. Surfaces Polygon's own error text on failure."""
     params = dict(params or {})
     params["apiKey"] = API_KEY
 
@@ -83,7 +89,6 @@ def get(url, params=None):
 
 
 def load_universe():
-    """Return the set of tickers that are common stock or ADR."""
     tickers = set()
     for t in UNIVERSE_TYPES:
         url = f"{BASE}/v3/reference/tickers"
@@ -102,10 +107,6 @@ def load_universe():
 
 
 def load_sessions(n_needed):
-    """
-    Walk backward collecting grouped daily bars, starting START_DAYS_BACK
-    days ago. Empty result = weekend or holiday. Returns oldest -> newest.
-    """
     sessions = []
     day = dt.date.today() - dt.timedelta(days=START_DAYS_BACK)
     probes = 0
@@ -114,7 +115,7 @@ def load_sessions(n_needed):
     while len(sessions) < n_needed and probes < 25:
         probes += 1
 
-        if day.weekday() < 5:  # skip weekends without burning a call
+        if day.weekday() < 5:
             url = f"{BASE}/v2/aggs/grouped/locale/us/market/stocks/{day.isoformat()}"
             try:
                 data = get(url, {"adjusted": "true"})
@@ -129,10 +130,8 @@ def load_sessions(n_needed):
                 sys.stderr.write(f"  {day}: NOT AUTHORIZED -- {e}\n")
                 if unauthorized_days >= 4:
                     raise SystemExit(
-                        "\nPolygon refused 4 dates in a row.\n"
-                        "Your plan likely does not include the grouped daily "
-                        "aggregates endpoint at all.\n"
-                        "Check https://polygon.io/pricing\n"
+                        "\nPolygon refused 4 dates in a row -- likely an "
+                        "entitlement problem. See https://polygon.io/pricing\n"
                     )
             time.sleep(SLEEP_BETWEEN_CALLS)
 
@@ -141,14 +140,13 @@ def load_sessions(n_needed):
     if len(sessions) < n_needed:
         raise SystemExit(
             f"\nOnly found {len(sessions)} of {n_needed} required sessions.\n"
-            "If you see NOT AUTHORIZED above, that's an entitlement problem.\n"
         )
 
     sessions.reverse()
     return sessions
 
 
-def run_scan():
+def run_scans():
     n_needed = LOOKBACK_BARS + 1 + VOL_OFFSET
 
     sys.stderr.write("Loading universe...\n")
@@ -159,15 +157,14 @@ def run_scan():
     sessions = load_sessions(n_needed)
 
     idx_current = len(sessions) - 1
-    idx_prior = idx_current - LOOKBACK_BARS
-
     current_date, current_bars = sessions[idx_current]
-    _, prior_bars = sessions[idx_prior]
+    _, prior_bars = sessions[idx_current - LOOKBACK_BARS]
 
     vol_end = len(sessions) - VOL_OFFSET
     vol_sessions = sessions[vol_end - MIN_VOL_WINDOW:vol_end]
 
-    hits = []
+    up_hits, down_hits = [], []
+
     for ticker in universe:
         cur = current_bars.get(ticker)
         pri = prior_bars.get(ticker)
@@ -177,8 +174,14 @@ def run_scan():
         c, c5 = cur.get("c"), pri.get("c")
         if not c or not c5 or c5 <= 0:
             continue
-        if c < MIN_PRICE or c / c5 < GAIN_RATIO:
+
+        # price and volume filters apply to BOTH directions
+        if c < MIN_PRICE:
             continue
+
+        ratio = c / c5
+        if UP_RATIO > ratio > DOWN_RATIO:
+            continue  # neither scan
 
         vols, ok = [], True
         for _, bars in vol_sessions:
@@ -190,48 +193,108 @@ def run_scan():
         if not ok or min(vols) <= MIN_VOL:
             continue
 
-        hits.append({
+        row = {
             "ticker": ticker,
             "close": round(c, 2),
             "close_5d_ago": round(c5, 2),
-            "pct_change_5d": round((c / c5 - 1) * 100, 2),
+            "pct_change_5d": round((ratio - 1) * 100, 2),
             "volume": int(cur.get("v") or 0),
             "min_vol_3d": int(min(vols)),
-        })
+        }
 
-    hits.sort(key=lambda h: h["pct_change_5d"], reverse=True)
+        if ratio >= UP_RATIO:
+            up_hits.append(row)
+        else:
+            down_hits.append(row)
+
+    up_hits.sort(key=lambda h: h["pct_change_5d"], reverse=True)
+    down_hits.sort(key=lambda h: h["pct_change_5d"])  # most negative first
+
+    up_n, down_n = len(up_hits), len(down_hits)
+    total = up_n + down_n
 
     return {
-        "scan": "SSS Study 20% plus Bullish",
+        "scan": "SSS Study 20% Breadth",
         "as_of": current_date.isoformat(),
         "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(),
         "criteria": {
-            "gain_ratio": GAIN_RATIO,
+            "up_ratio": UP_RATIO,
+            "down_ratio": DOWN_RATIO,
             "lookback_bars": LOOKBACK_BARS,
             "min_vol": MIN_VOL,
             "min_vol_window": MIN_VOL_WINDOW,
             "vol_offset": VOL_OFFSET,
             "min_price": MIN_PRICE,
         },
-        "count": len(hits),
-        "results": hits,
+        "breadth": {
+            "up_count": up_n,
+            "down_count": down_n,
+            "net": up_n - down_n,
+            # share of the 20% movers that are to the upside, 0.0 - 1.0
+            "up_share": round(up_n / total, 4) if total else None,
+            # classic ratio; None when there are no down names
+            "up_down_ratio": round(up_n / down_n, 2) if down_n else None,
+        },
+        "up_count": up_n,
+        "down_count": down_n,
+        "up": up_hits,
+        "down": down_hits,
     }
 
 
+FIELDS = ["ticker", "close", "close_5d_ago", "pct_change_5d",
+          "volume", "min_vol_3d"]
+
+
+def write_csv(path, rows):
+    with open(path, "w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=FIELDS)
+        w.writeheader()
+        w.writerows(rows)
+
+
+def append_history(out):
+    """One row per trading day. Skips dates already recorded."""
+    path = "output/history.csv"
+    seen = set()
+    if os.path.exists(path):
+        with open(path) as f:
+            for row in csv.DictReader(f):
+                seen.add(row["as_of"])
+
+    if out["as_of"] in seen:
+        sys.stderr.write(f"history already has {out['as_of']}, skipping\n")
+        return
+
+    b = out["breadth"]
+    new = not os.path.exists(path)
+    with open(path, "a", newline="") as f:
+        w = csv.writer(f)
+        if new:
+            w.writerow(["as_of", "up_count", "down_count", "net",
+                        "up_share", "up_down_ratio"])
+        w.writerow([out["as_of"], b["up_count"], b["down_count"],
+                    b["net"], b["up_share"], b["up_down_ratio"]])
+
+
 def main():
-    out = run_scan()
+    out = run_scans()
     os.makedirs("output", exist_ok=True)
 
     with open("output/latest.json", "w") as f:
         json.dump(out, f, indent=2)
 
-    with open("output/latest.csv", "w") as f:
-        f.write("ticker,close,close_5d_ago,pct_change_5d,volume,min_vol_3d\n")
-        for h in out["results"]:
-            f.write("{ticker},{close},{close_5d_ago},{pct_change_5d},"
-                    "{volume},{min_vol_3d}\n".format(**h))
+    write_csv("output/latest_up.csv", out["up"])
+    write_csv("output/latest_down.csv", out["down"])
+    append_history(out)
 
-    sys.stderr.write(f"\n{out['count']} hits as of {out['as_of']}\n")
+    b = out["breadth"]
+    sys.stderr.write(
+        f"\nAs of {out['as_of']}:\n"
+        f"  up 20%+   : {b['up_count']}\n"
+        f"  down 20%+ : {b['down_count']}\n"
+        f"  net       : {b['net']:+d}\n"
+    )
 
 
 if __name__ == "__main__":
