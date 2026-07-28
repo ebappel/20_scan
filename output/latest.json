@@ -1,12 +1,20 @@
 {
   "scan": "SSS Study 20% Breadth",
   "as_of": "2026-07-27",
-  "generated_at": "2026-07-28T15:25:50.394237+00:00",
-  "spy": {
-    "open": 744.91,
-    "high": 745.53,
-    "low": 735.87,
-    "close": 739.09
+  "generated_at": "2026-07-28T23:34:38.549946+00:00",
+  "benchmarks": {
+    "SPY": {
+      "open": 744.91,
+      "high": 745.53,
+      "low": 735.87,
+      "close": 739.09
+    },
+    "QQQ": {
+      "open": 691.68,
+      "high": 692.3,
+      "low": 675.95,
+      "close": 682.12
+    }
   },
   "criteria": {
     "up_ratio": 1.2,
@@ -246,20 +254,20 @@
       "min_vol_3d": 7596682
     },
     {
-      "ticker": "CHRN",
-      "close": 20.26,
-      "close_5d_ago": 28.89,
-      "pct_change_5d": -29.87,
-      "volume": 243071,
-      "min_vol_3d": 176793
-    },
-    {
       "ticker": "RBKB",
       "close": 12.3,
       "close_5d_ago": 17.54,
       "pct_change_5d": -29.87,
       "volume": 247240,
       "min_vol_3d": 247240
+    },
+    {
+      "ticker": "CHRN",
+      "close": 20.26,
+      "close_5d_ago": 28.89,
+      "pct_change_5d": -29.87,
+      "volume": 243071,
+      "min_vol_3d": 176793
     },
     {
       "ticker": "AKAN",
