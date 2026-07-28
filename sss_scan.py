@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-SSS Study -- nightly breadth scan.  (v5)
+SSS Study -- nightly breadth scan.  (v6)
 
 Runs TWO scans against the same sessions of data:
 
@@ -14,15 +14,16 @@ Both share the same filters:
 Universe: US common stocks + ADRs.
 Data: Polygon.io grouped daily aggregates, previous trading day.
 
-v5 changes:
-  - records SPY open/high/low/close (was close only) so the chart can
-    draw candles instead of a line
+v6 changes:
+  - records OHLC for every ticker in BENCHMARKS (SPY and QQQ), so the
+    chart can switch which index it plots. Add to that tuple to track
+    more; the CSV columns follow automatically.
 
 Outputs to output/:
     latest_up.csv     the up 20% names
     latest_down.csv   the down 20% names
     latest.json       both lists plus the breadth summary
-    history.csv       one row per session: date, SPY OHLC, up, down, net
+    history.csv       one row per session: date, benchmark OHLC, up, down, net
 
 Env:
     POLYGON_API_KEY   required
@@ -53,7 +54,9 @@ MIN_VOL = 100_000
 MIN_PRICE = 5.00
 VOL_OFFSET = 0
 UNIVERSE_TYPES = ("CS", "ADRC")
-BENCHMARK = "SPY"
+
+# Index proxies plotted in the price pane. Add tickers here to track more.
+BENCHMARKS = ("SPY", "QQQ")
 
 START_DAYS_BACK = 1
 SLEEP_BETWEEN_CALLS = 13
@@ -158,6 +161,10 @@ def load_sessions(n_needed):
     return sessions
 
 
+def _r2(v):
+    return round(v, 2) if isinstance(v, (int, float)) else None
+
+
 def scan_one_day(universe, sessions, idx):
     """Compute breadth for sessions[idx]. Needs LOOKBACK_BARS prior sessions."""
     current_date, current_bars = sessions[idx]
@@ -211,9 +218,16 @@ def scan_one_day(universe, sessions, idx):
     up_hits.sort(key=lambda h: h["pct_change_5d"], reverse=True)
     down_hits.sort(key=lambda h: h["pct_change_5d"])
 
-    # benchmark OHLC for the price pane
-    spy = current_bars.get(BENCHMARK) or {}
-    r2 = lambda v: round(v, 2) if isinstance(v, (int, float)) else None
+    # OHLC for each index proxy
+    benchmarks = {}
+    for sym in BENCHMARKS:
+        b = current_bars.get(sym) or {}
+        benchmarks[sym] = {
+            "open": _r2(b.get("o")),
+            "high": _r2(b.get("h")),
+            "low": _r2(b.get("l")),
+            "close": _r2(b.get("c")),
+        }
 
     up_n, down_n = len(up_hits), len(down_hits)
     total = up_n + down_n
@@ -222,12 +236,7 @@ def scan_one_day(universe, sessions, idx):
         "scan": "SSS Study 20% Breadth",
         "as_of": current_date.isoformat(),
         "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(),
-        "spy": {
-            "open": r2(spy.get("o")),
-            "high": r2(spy.get("h")),
-            "low": r2(spy.get("l")),
-            "close": r2(spy.get("c")),
-        },
+        "benchmarks": benchmarks,
         "criteria": {
             "up_ratio": UP_RATIO,
             "down_ratio": DOWN_RATIO,
@@ -253,8 +262,14 @@ def scan_one_day(universe, sessions, idx):
 
 FIELDS = ["ticker", "close", "close_5d_ago", "pct_change_5d",
           "volume", "min_vol_3d"]
-HIST_FIELDS = ["as_of", "spy_open", "spy_high", "spy_low", "spy_close",
-               "up_count", "down_count", "net", "up_share", "up_down_ratio"]
+
+# e.g. spy_open, spy_high, ... qqq_close
+BENCH_FIELDS = [f"{s.lower()}_{k}"
+                for s in BENCHMARKS
+                for k in ("open", "high", "low", "close")]
+
+HIST_FIELDS = (["as_of"] + BENCH_FIELDS +
+               ["up_count", "down_count", "net", "up_share", "up_down_ratio"])
 
 
 def write_csv(path, rows):
@@ -265,19 +280,19 @@ def write_csv(path, rows):
 
 
 def hist_row(out):
-    b, s = out["breadth"], out["spy"]
-    return {
-        "as_of": out["as_of"],
-        "spy_open": s["open"],
-        "spy_high": s["high"],
-        "spy_low": s["low"],
-        "spy_close": s["close"],
+    b = out["breadth"]
+    row = {"as_of": out["as_of"]}
+    for sym, ohlc in out["benchmarks"].items():
+        for k, v in ohlc.items():
+            row[f"{sym.lower()}_{k}"] = v
+    row.update({
         "up_count": b["up_count"],
         "down_count": b["down_count"],
         "net": b["net"],
         "up_share": b["up_share"],
         "up_down_ratio": b["up_down_ratio"],
-    }
+    })
+    return row
 
 
 def merge_history(new_rows):
@@ -336,8 +351,10 @@ def main():
     total = merge_history([hist_row(r) for r in results])
 
     b = latest["breadth"]
+    quotes = "  ".join(
+        f"{s} {latest['benchmarks'][s]['close']}" for s in BENCHMARKS)
     sys.stderr.write(
-        f"\nAs of {latest['as_of']} (SPY {latest['spy']['close']}):\n"
+        f"\nAs of {latest['as_of']} ({quotes}):\n"
         f"  up 20%+   : {b['up_count']}\n"
         f"  down 20%+ : {b['down_count']}\n"
         f"  net       : {b['net']:+d}\n"
