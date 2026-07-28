@@ -1,0 +1,160 @@
+{
+  "scan": "SSS Study 20% plus Bullish",
+  "as_of": "2026-07-27",
+  "generated_at": "2026-07-28T13:22:41.277730+00:00",
+  "criteria": {
+    "gain_ratio": 1.2,
+    "lookback_bars": 5,
+    "min_vol": 100000,
+    "min_vol_window": 3,
+    "vol_offset": 0,
+    "min_price": 5.0
+  },
+  "count": 18,
+  "results": [
+    {
+      "ticker": "DFNS",
+      "close": 13.1,
+      "close_5d_ago": 4.26,
+      "pct_change_5d": 207.51,
+      "volume": 78865711,
+      "min_vol_3d": 595787
+    },
+    {
+      "ticker": "PN",
+      "close": 10.14,
+      "close_5d_ago": 4.32,
+      "pct_change_5d": 134.72,
+      "volume": 233031,
+      "min_vol_3d": 233031
+    },
+    {
+      "ticker": "UTZ",
+      "close": 14.08,
+      "close_5d_ago": 7.45,
+      "pct_change_5d": 88.99,
+      "volume": 2446932,
+      "min_vol_3d": 2446932
+    },
+    {
+      "ticker": "ADVB",
+      "close": 14.36,
+      "close_5d_ago": 8.9,
+      "pct_change_5d": 61.35,
+      "volume": 456906,
+      "min_vol_3d": 456906
+    },
+    {
+      "ticker": "FBRX",
+      "close": 76.5,
+      "close_5d_ago": 47.49,
+      "pct_change_5d": 61.09,
+      "volume": 17545448,
+      "min_vol_3d": 575893
+    },
+    {
+      "ticker": "MF",
+      "close": 6.19,
+      "close_5d_ago": 4.22,
+      "pct_change_5d": 46.68,
+      "volume": 290212,
+      "min_vol_3d": 125905
+    },
+    {
+      "ticker": "OTLY",
+      "close": 14.3,
+      "close_5d_ago": 9.88,
+      "pct_change_5d": 44.74,
+      "volume": 349841,
+      "min_vol_3d": 349841
+    },
+    {
+      "ticker": "SAFT",
+      "close": 103,
+      "close_5d_ago": 73.85,
+      "pct_change_5d": 39.47,
+      "volume": 1966094,
+      "min_vol_3d": 163709
+    },
+    {
+      "ticker": "NVEC",
+      "close": 117.38,
+      "close_5d_ago": 84.69,
+      "pct_change_5d": 38.6,
+      "volume": 249905,
+      "min_vol_3d": 249905
+    },
+    {
+      "ticker": "CLF",
+      "close": 12.25,
+      "close_5d_ago": 8.98,
+      "pct_change_5d": 36.41,
+      "volume": 43367174,
+      "min_vol_3d": 43367174
+    },
+    {
+      "ticker": "JEM",
+      "close": 5.85,
+      "close_5d_ago": 4.32,
+      "pct_change_5d": 35.42,
+      "volume": 513357,
+      "min_vol_3d": 513357
+    },
+    {
+      "ticker": "RNG",
+      "close": 53.7,
+      "close_5d_ago": 40.74,
+      "pct_change_5d": 31.81,
+      "volume": 5489389,
+      "min_vol_3d": 4855455
+    },
+    {
+      "ticker": "THC",
+      "close": 243.36,
+      "close_5d_ago": 194.38,
+      "pct_change_5d": 25.2,
+      "volume": 2218918,
+      "min_vol_3d": 1774471
+    },
+    {
+      "ticker": "SMCI",
+      "close": 29.81,
+      "close_5d_ago": 23.83,
+      "pct_change_5d": 25.09,
+      "volume": 35912282,
+      "min_vol_3d": 35912282
+    },
+    {
+      "ticker": "AGEN",
+      "close": 6.13,
+      "close_5d_ago": 4.97,
+      "pct_change_5d": 23.34,
+      "volume": 1234481,
+      "min_vol_3d": 1234481
+    },
+    {
+      "ticker": "EAF",
+      "close": 7.79,
+      "close_5d_ago": 6.32,
+      "pct_change_5d": 23.26,
+      "volume": 592845,
+      "min_vol_3d": 448841
+    },
+    {
+      "ticker": "OII",
+      "close": 52.17,
+      "close_5d_ago": 42.82,
+      "pct_change_5d": 21.84,
+      "volume": 1670994,
+      "min_vol_3d": 1670994
+    },
+    {
+      "ticker": "IMMR",
+      "close": 7.74,
+      "close_5d_ago": 6.43,
+      "pct_change_5d": 20.3,
+      "volume": 2929223,
+      "min_vol_3d": 342869
+    }
+  ]
+}
