@@ -15,6 +15,8 @@
     --dim: #70707a;
     --up: #26a65b;
     --down: #e04c4c;
+    --bull: #2f8f57;
+    --bear: #b8434c;
     --accent: #38bdf8;
   }
   * { box-sizing: border-box; }
@@ -26,15 +28,12 @@
     font: 13px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     display: flex;
     flex-direction: column;
-    overflow: hidden;              /* page never scrolls; panes fill it */
+    overflow: hidden;
   }
 
   header {
     flex: none;
-    display: flex;
-    align-items: baseline;
-    gap: 18px;
-    flex-wrap: wrap;
+    display: flex; align-items: baseline; gap: 18px; flex-wrap: wrap;
     padding: 9px 14px;
     border-bottom: 1px solid var(--edge);
   }
@@ -48,16 +47,11 @@
   .stat.down b { color: var(--down); }
   .spacer { flex: 1; }
 
-  /* flex-basis:0 + flex-grow means grow values ARE the pixel heights,
-     and the three panes always exactly fill the space. No dead zone. */
   #panes { flex: 1; min-height: 0; display: flex; flex-direction: column; }
   .pane {
     position: relative;
-    flex-grow: 340;
-    flex-basis: 0;
-    min-height: 60px;
-    background: var(--pane);
-    overflow: hidden;
+    flex-grow: 340; flex-basis: 0; min-height: 60px;
+    background: var(--pane); overflow: hidden;
   }
   #p-up, #p-down { flex-grow: 150; }
   .pane-label {
@@ -66,6 +60,7 @@
     color: var(--dim); pointer-events: none;
     text-shadow: 0 0 6px var(--bg), 0 0 6px var(--bg);
   }
+  .pane-label .hint { color: #4e4e58; text-transform: none; letter-spacing: 0; }
   .chart-host { position: absolute; inset: 0; }
 
   .grip {
@@ -122,12 +117,14 @@
   </div>
   <div class="grip" data-above="p-spy" data-below="p-up"></div>
   <div class="pane" id="p-up">
-    <span class="pane-label">Up 20% in 5 days</span>
+    <span class="pane-label">Up 20% in 5 days
+      <span class="hint">&mdash; &lt;20 bullish &middot; &gt;100 bearish</span></span>
     <div class="chart-host" id="h-up"></div>
   </div>
   <div class="grip" data-above="p-up" data-below="p-down"></div>
   <div class="pane" id="p-down">
-    <span class="pane-label">Down 20% in 5 days</span>
+    <span class="pane-label">Down 20% in 5 days
+      <span class="hint">&mdash; &lt;20 bearish &middot; &gt;100 bullish</span></span>
     <div class="chart-host" id="h-down"></div>
   </div>
 </div>
@@ -139,6 +136,7 @@
   <button data-days="252">1Y</button>
   <button data-days="0" aria-pressed="true">ALL</button>
   <span class="spacer"></span>
+  <button id="toggle-levels" aria-pressed="true">LEVELS 20 / 100</button>
   <button id="reset-layout">RESET PANELS</button>
   <span id="s-sessions"></span>
 </footer>
@@ -160,6 +158,14 @@ let ROWS = [];
 let candleSeries, upSeries, downSeries;
 let charts = [];
 let syncing = false;
+
+/* ---------- signal thresholds ----------
+   Contrarian read. On the UP pane a low count is bullish and a high
+   count is bearish; the DOWN pane inverts that. Line colours follow
+   the meaning, not the pane. */
+const LOW = 20, HIGH = 100;
+let levelsOn = true;
+const priceLines = [];
 
 /* ---------- data ---------- */
 
@@ -189,8 +195,6 @@ function parseCSV(text) {
 
 /* ---------- chart construction ---------- */
 
-// minimumWidth keeps every price scale the same width, which is what
-// actually makes the three panes line up column for column.
 function baseOptions(showTime) {
   return {
     autoSize: true,
@@ -225,6 +229,39 @@ function baseOptions(showTime) {
   };
 }
 
+/* Price lines sit outside the series data, so autoscale ignores them.
+   This widens the range enough that both levels stay on screen. */
+function makeProvider() {
+  return original => {
+    const res = original();
+    if (!res || !res.priceRange) return res;
+    if (!levelsOn) return res;
+    return {
+      ...res,
+      priceRange: {
+        minValue: Math.min(res.priceRange.minValue, 0),
+        maxValue: Math.max(res.priceRange.maxValue, HIGH * 1.1),
+      },
+    };
+  };
+}
+
+function addLevels(series, lowColor, highColor) {
+  [[LOW, lowColor], [HIGH, highColor]].forEach(([price, color]) => {
+    priceLines.push({
+      series,
+      line: series.createPriceLine({
+        price,
+        color,
+        lineWidth: 1,
+        lineStyle: LWC.LineStyle.Dashed,
+        axisLabelVisible: true,
+        title: String(price),
+      }),
+    });
+  });
+}
+
 function build() {
   const spy = LWC.createChart(document.getElementById('h-spy'), baseOptions(false));
   const up = LWC.createChart(document.getElementById('h-up'), baseOptions(false));
@@ -246,15 +283,21 @@ function build() {
     color: col('--up'),
     priceLineVisible: false,
     priceFormat: { type: 'volume', precision: 0, minMove: 1 },
+    autoscaleInfoProvider: makeProvider(),
   });
 
   downSeries = down.addHistogramSeries({
     color: col('--down'),
     priceLineVisible: false,
     priceFormat: { type: 'volume', precision: 0, minMove: 1 },
+    autoscaleInfoProvider: makeProvider(),
   });
 
-  // pan/zoom one pane, all three follow
+  // UP pane: 20 is the bullish line, 100 the bearish one.
+  addLevels(upSeries, col('--bull'), col('--bear'));
+  // DOWN pane: inverted.
+  addLevels(downSeries, col('--bear'), col('--bull'));
+
   charts.forEach(src => {
     src.timeScale().subscribeVisibleLogicalRangeChange(range => {
       if (syncing || !range) return;
@@ -266,7 +309,6 @@ function build() {
     });
   });
 
-  // one crosshair across all three panes
   charts.forEach(src => {
     src.subscribeCrosshairMove(param => {
       if (syncing) return;
@@ -330,6 +372,24 @@ function applyRange(days) {
   syncing = false;
 }
 
+/* ---------- levels toggle ---------- */
+
+document.getElementById('toggle-levels').addEventListener('click', e => {
+  levelsOn = !levelsOn;
+  e.currentTarget.setAttribute('aria-pressed', String(levelsOn));
+
+  priceLines.forEach(({ line }) =>
+    line.applyOptions({
+      lineWidth: levelsOn ? 1 : 0,
+      axisLabelVisible: levelsOn,
+      color: levelsOn ? line.options().color : 'transparent',
+    }));
+
+  // re-apply so the autoscale provider recalculates
+  [upSeries, downSeries].forEach(s =>
+    s.applyOptions({ autoscaleInfoProvider: makeProvider() }));
+});
+
 /* ---------- resizable panes ---------- */
 
 const LAYOUT_KEY = 'sss-pane-flex';
@@ -376,7 +436,6 @@ document.addEventListener('pointermove', e => {
   let dy = e.clientY - drag.y;
   dy = Math.max(dy, MIN_H - drag.hAbove);
   dy = Math.min(dy, drag.hBelow - MIN_H);
-  // flex-basis is 0, so grow values behave as pixel heights
   drag.above.style.flexGrow = drag.hAbove + dy;
   drag.below.style.flexGrow = drag.hBelow - dy;
 });
