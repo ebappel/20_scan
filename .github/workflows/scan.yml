@@ -3,9 +3,14 @@ name: SSS Nightly Scan
 on:
   schedule:
     # 22:30 UTC Mon-Fri = 6:30pm ET during EDT, 5:30pm ET during EST.
-    # Both are comfortably after the 4pm close.
     - cron: "30 22 * * 1-5"
-  workflow_dispatch:   # lets you trigger a run manually to test
+
+  workflow_dispatch:
+    inputs:
+      backfill_days:
+        description: "Days of history to backfill. Leave as 0 for a normal nightly run. Use 120 for a one-time six-month backfill (takes ~30 min)."
+        required: false
+        default: "0"
 
 permissions:
   contents: write
@@ -13,6 +18,8 @@ permissions:
 jobs:
   scan:
     runs-on: ubuntu-latest
+    timeout-minutes: 120
+
     steps:
       - uses: actions/checkout@v4
 
@@ -26,6 +33,7 @@ jobs:
       - name: Run scan
         env:
           POLYGON_API_KEY: ${{ secrets.POLYGON_API_KEY }}
+          BACKFILL_DAYS: ${{ github.event.inputs.backfill_days || '0' }}
         run: python sss_scan.py
 
       - name: Commit results
