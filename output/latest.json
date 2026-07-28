@@ -1,17 +1,26 @@
 {
-  "scan": "SSS Study 20% plus Bullish",
+  "scan": "SSS Study 20% Breadth",
   "as_of": "2026-07-27",
-  "generated_at": "2026-07-28T13:22:41.277730+00:00",
+  "generated_at": "2026-07-28T13:31:20.560328+00:00",
   "criteria": {
-    "gain_ratio": 1.2,
+    "up_ratio": 1.2,
+    "down_ratio": 0.8,
     "lookback_bars": 5,
     "min_vol": 100000,
     "min_vol_window": 3,
     "vol_offset": 0,
     "min_price": 5.0
   },
-  "count": 18,
-  "results": [
+  "breadth": {
+    "up_count": 18,
+    "down_count": 16,
+    "net": 2,
+    "up_share": 0.5294,
+    "up_down_ratio": 1.12
+  },
+  "up_count": 18,
+  "down_count": 16,
+  "up": [
     {
       "ticker": "DFNS",
       "close": 13.1,
@@ -155,6 +164,136 @@
       "pct_change_5d": 20.3,
       "volume": 2929223,
       "min_vol_3d": 342869
+    }
+  ],
+  "down": [
+    {
+      "ticker": "MPLT",
+      "close": 9.9,
+      "close_5d_ago": 35.99,
+      "pct_change_5d": -72.48,
+      "volume": 8148125,
+      "min_vol_3d": 376379
+    },
+    {
+      "ticker": "FFAI",
+      "close": 5.12,
+      "close_5d_ago": 16.44,
+      "pct_change_5d": -68.86,
+      "volume": 1021016,
+      "min_vol_3d": 368705
+    },
+    {
+      "ticker": "CAPR",
+      "close": 7.0,
+      "close_5d_ago": 19.5,
+      "pct_change_5d": -64.13,
+      "volume": 29995425,
+      "min_vol_3d": 2009540
+    },
+    {
+      "ticker": "CLBK",
+      "close": 10.85,
+      "close_5d_ago": 24.5,
+      "pct_change_5d": -55.71,
+      "volume": 6553933,
+      "min_vol_3d": 6553933
+    },
+    {
+      "ticker": "VEEE",
+      "close": 15.77,
+      "close_5d_ago": 29.49,
+      "pct_change_5d": -46.52,
+      "volume": 3724944,
+      "min_vol_3d": 235003
+    },
+    {
+      "ticker": "HQ",
+      "close": 12.42,
+      "close_5d_ago": 19.6,
+      "pct_change_5d": -36.63,
+      "volume": 266950,
+      "min_vol_3d": 249285
+    },
+    {
+      "ticker": "SDOT",
+      "close": 16.84,
+      "close_5d_ago": 26.14,
+      "pct_change_5d": -35.58,
+      "volume": 448439,
+      "min_vol_3d": 173921
+    },
+    {
+      "ticker": "QMLS",
+      "close": 6.47,
+      "close_5d_ago": 9.49,
+      "pct_change_5d": -31.82,
+      "volume": 214673,
+      "min_vol_3d": 214673
+    },
+    {
+      "ticker": "LBRT",
+      "close": 16.86,
+      "close_5d_ago": 24.07,
+      "pct_change_5d": -29.95,
+      "volume": 7596682,
+      "min_vol_3d": 7596682
+    },
+    {
+      "ticker": "CHRN",
+      "close": 20.26,
+      "close_5d_ago": 28.89,
+      "pct_change_5d": -29.87,
+      "volume": 243071,
+      "min_vol_3d": 176793
+    },
+    {
+      "ticker": "RBKB",
+      "close": 12.3,
+      "close_5d_ago": 17.54,
+      "pct_change_5d": -29.87,
+      "volume": 247240,
+      "min_vol_3d": 247240
+    },
+    {
+      "ticker": "AKAN",
+      "close": 6.31,
+      "close_5d_ago": 8.77,
+      "pct_change_5d": -28.05,
+      "volume": 222740,
+      "min_vol_3d": 222740
+    },
+    {
+      "ticker": "JLHL",
+      "close": 6.24,
+      "close_5d_ago": 8.61,
+      "pct_change_5d": -27.53,
+      "volume": 335331,
+      "min_vol_3d": 226489
+    },
+    {
+      "ticker": "BCAR",
+      "close": 7.79,
+      "close_5d_ago": 10.36,
+      "pct_change_5d": -24.81,
+      "volume": 338759,
+      "min_vol_3d": 338759
+    },
+    {
+      "ticker": "ACI",
+      "close": 11.37,
+      "close_5d_ago": 14.96,
+      "pct_change_5d": -24.0,
+      "volume": 13765094,
+      "min_vol_3d": 13765094
+    },
+    {
+      "ticker": "SSTK",
+      "close": 5.89,
+      "close_5d_ago": 7.68,
+      "pct_change_5d": -23.31,
+      "volume": 1611931,
+      "min_vol_3d": 1323477
     }
   ]
 }
