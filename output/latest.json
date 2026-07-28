@@ -1,7 +1,8 @@
 {
   "scan": "SSS Study 20% Breadth",
   "as_of": "2026-07-27",
-  "generated_at": "2026-07-28T13:31:20.560328+00:00",
+  "generated_at": "2026-07-28T14:29:02.483247+00:00",
+  "spy_close": 739.09,
   "criteria": {
     "up_ratio": 1.2,
     "down_ratio": 0.8,
