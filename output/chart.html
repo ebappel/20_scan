@@ -15,7 +15,6 @@
     --dim: #6f6f6f;
     --up: #22c55e;
     --down: #ef4444;
-    --price: #e8e8e8;
     --accent: #38bdf8;
   }
   * { box-sizing: border-box; }
@@ -24,6 +23,7 @@
     background: var(--bg);
     color: var(--text);
     font: 13px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    overflow-x: hidden;
   }
   header {
     display: flex;
@@ -44,12 +44,13 @@
   .stat b { color: var(--text); font-weight: 600; }
   .stat.up b { color: var(--up); }
   .stat.down b { color: var(--down); }
-  .panes { padding: 6px 0 0; }
+  .spacer { flex: 1; }
+
   .pane {
     position: relative;
-    border-bottom: 1px solid var(--edge);
     background: var(--pane);
     padding: 4px 8px 6px;
+    min-height: 90px;
   }
   .pane-label {
     position: absolute;
@@ -62,16 +63,39 @@
     color: var(--dim);
     pointer-events: none;
   }
-  .pane.price { height: 340px; }
-  .pane.hist  { height: 170px; }
   .pane canvas { width: 100% !important; height: 100% !important; }
+
+  /* drag handle between panes */
+  .grip {
+    height: 7px;
+    background: var(--bg);
+    border-top: 1px solid var(--edge);
+    border-bottom: 1px solid var(--edge);
+    cursor: ns-resize;
+    position: relative;
+  }
+  .grip::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 34px;
+    height: 1px;
+    transform: translate(-50%, -50%);
+    background: #3a3a3a;
+  }
+  .grip:hover::after, .grip.active::after { background: var(--accent); }
+  body.resizing { cursor: ns-resize; user-select: none; }
+
   footer {
     display: flex;
     gap: 6px;
     align-items: center;
+    flex-wrap: wrap;
     padding: 10px 14px 24px;
     color: var(--dim);
     font-size: 12px;
+    border-top: 1px solid var(--edge);
   }
   button {
     background: transparent;
@@ -86,7 +110,6 @@
   button:hover { color: var(--text); border-color: #3a3a3a; }
   button[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); }
   button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .spacer { flex: 1; }
   #msg { padding: 40px 14px; color: var(--dim); }
 </style>
 </head>
@@ -105,10 +128,18 @@
 
 <div id="msg">Loading history…</div>
 
-<div class="panes" id="panes" hidden>
-  <div class="pane price"><span class="pane-label">SPY daily close</span><canvas id="c-spy"></canvas></div>
-  <div class="pane hist"><span class="pane-label">Stocks up 20% in 5 days</span><canvas id="c-up"></canvas></div>
-  <div class="pane hist"><span class="pane-label">Stocks down 20% in 5 days</span><canvas id="c-down"></canvas></div>
+<div id="panes" hidden>
+  <div class="pane" id="p-spy" style="height:340px">
+    <span class="pane-label">SPY daily</span><canvas id="c-spy"></canvas>
+  </div>
+  <div class="grip" data-above="p-spy" data-below="p-up"></div>
+  <div class="pane" id="p-up" style="height:170px">
+    <span class="pane-label">Stocks up 20% in 5 days</span><canvas id="c-up"></canvas>
+  </div>
+  <div class="grip" data-above="p-up" data-below="p-down"></div>
+  <div class="pane" id="p-down" style="height:170px">
+    <span class="pane-label">Stocks down 20% in 5 days</span><canvas id="c-down"></canvas>
+  </div>
 </div>
 
 <footer id="controls" hidden>
@@ -118,6 +149,7 @@
   <button data-days="252">1Y</button>
   <button data-days="0" aria-pressed="true">ALL</button>
   <span class="spacer"></span>
+  <button id="reset-layout">RESET PANELS</button>
   <span id="s-sessions"></span>
 </footer>
 
@@ -128,6 +160,14 @@ const col = n => CSS.getPropertyValue(n).trim();
 let ALL = [];
 let charts = [];
 
+/* ---------- data ---------- */
+
+function num(v) {
+  if (v === undefined || v === null || v === '') return null;
+  const n = parseFloat(v);
+  return Number.isFinite(n) ? n : null;
+}
+
 function parseCSV(text) {
   const lines = text.trim().split(/\r?\n/);
   const head = lines[0].split(',');
@@ -137,7 +177,10 @@ function parseCSV(text) {
     head.forEach((h, i) => row[h] = cells[i]);
     return {
       date: row.as_of,
-      spy: row.spy_close ? parseFloat(row.spy_close) : null,
+      o: num(row.spy_open),
+      h: num(row.spy_high),
+      l: num(row.spy_low),
+      c: num(row.spy_close),
       up: parseInt(row.up_count, 10) || 0,
       down: parseInt(row.down_count, 10) || 0,
       net: parseInt(row.net, 10) || 0,
@@ -145,7 +188,8 @@ function parseCSV(text) {
   }).filter(r => r.date);
 }
 
-// Shared axis config so the three panes line up column for column.
+/* ---------- axes shared across panes so columns line up ---------- */
+
 function xAxis(labels, showTicks) {
   return {
     type: 'category',
@@ -166,7 +210,7 @@ function xAxis(labels, showTicks) {
   };
 }
 
-function yAxis(opts = {}) {
+function yAxis(extra = {}) {
   return Object.assign({
     position: 'right',
     grid: { color: col('--grid'), drawTicks: false },
@@ -177,7 +221,7 @@ function yAxis(opts = {}) {
       maxTicksLimit: 6,
       padding: 6,
     },
-  }, opts);
+  }, extra);
 }
 
 const baseOpts = {
@@ -185,6 +229,7 @@ const baseOpts = {
   maintainAspectRatio: false,
   animation: false,
   interaction: { mode: 'index', intersect: false },
+  layout: { padding: { top: 22 } },
   plugins: {
     legend: { display: false },
     tooltip: {
@@ -201,28 +246,63 @@ const baseOpts = {
   },
 };
 
+/* ---------- candles, drawn as two overlaid floating-bar sets ---------- */
+
+function buildCandles(rows) {
+  const lows = rows.map(r => r.l).filter(v => v !== null);
+  const highs = rows.map(r => r.h).filter(v => v !== null);
+  const span = (Math.max(...highs) - Math.min(...lows)) || 1;
+  const eps = span * 0.0008;   // keeps a doji from vanishing entirely
+
+  const colors = rows.map(r =>
+    (r.c !== null && r.o !== null && r.c < r.o) ? col('--down') : col('--up'));
+
+  const wick = rows.map(r =>
+    (r.l === null || r.h === null) ? null : [r.l, r.h]);
+
+  const body = rows.map(r => {
+    if (r.o === null || r.c === null) return null;
+    let lo = Math.min(r.o, r.c), hi = Math.max(r.o, r.c);
+    if (hi - lo < eps) { lo -= eps / 2; hi += eps / 2; }
+    return [lo, hi];
+  });
+
+  return { wick, body, colors };
+}
+
 function render(rows) {
   charts.forEach(c => c.destroy());
   charts = [];
 
   const labels = rows.map(r => r.date);
+  const { wick, body, colors } = buildCandles(rows);
+  const hasOHLC = body.some(v => v !== null);
 
   charts.push(new Chart(document.getElementById('c-spy'), {
-    type: 'line',
+    type: 'bar',
     data: {
       labels,
-      datasets: [{
-        data: rows.map(r => r.spy),
-        borderColor: col('--price'),
-        borderWidth: 1.4,
-        pointRadius: 0,
-        tension: 0,
-        spanGaps: true,
-      }],
+      datasets: [
+        {
+          data: wick,
+          backgroundColor: colors,
+          grouped: false,
+          barPercentage: 0.14,
+          categoryPercentage: 0.92,
+          borderWidth: 0,
+        },
+        {
+          data: body,
+          backgroundColor: colors,
+          grouped: false,
+          barPercentage: 0.72,
+          categoryPercentage: 0.92,
+          borderWidth: 0,
+        },
+      ],
     },
     options: {
       ...baseOpts,
-      layout: { padding: { top: 22 } },
       scales: {
         x: xAxis(labels, false),
         y: yAxis({ ticks: {
@@ -237,13 +317,20 @@ function render(rows) {
         ...baseOpts.plugins,
         tooltip: {
           ...baseOpts.plugins.tooltip,
-          callbacks: { label: c => 'SPY  ' + (c.parsed.y ?? '—') },
+          filter: item => item.datasetIndex === 1,
+          callbacks: {
+            label(ctx) {
+              const r = rows[ctx.dataIndex];
+              if (r.o === null) return 'no price data';
+              return ['O ' + r.o, 'H ' + r.h, 'L ' + r.l, 'C ' + r.c];
+            },
+          },
         },
       },
     },
   }));
 
-  const hist = (canvasId, key, color, label) =>
+  const hist = (canvasId, key, color, label, showTicks) =>
     new Chart(document.getElementById(canvasId), {
       type: 'bar',
       data: {
@@ -258,9 +345,8 @@ function render(rows) {
       },
       options: {
         ...baseOpts,
-        layout: { padding: { top: 22 } },
         scales: {
-          x: xAxis(labels, canvasId === 'c-down'),
+          x: xAxis(labels, showTicks),
           y: yAxis({ beginAtZero: true }),
         },
         plugins: {
@@ -273,31 +359,105 @@ function render(rows) {
       },
     });
 
-  charts.push(hist('c-up', 'up', col('--up'), 'UP'));
-  charts.push(hist('c-down', 'down', col('--down'), 'DOWN'));
+  charts.push(hist('c-up', 'up', col('--up'), 'UP', false));
+  charts.push(hist('c-down', 'down', col('--down'), 'DOWN', true));
 
   const last = rows[rows.length - 1];
   document.getElementById('s-date').textContent = last.date;
-  document.getElementById('s-spy').textContent = last.spy ?? '—';
+  document.getElementById('s-spy').textContent = last.c ?? '—';
   document.getElementById('s-up').textContent = last.up;
   document.getElementById('s-down').textContent = last.down;
   document.getElementById('s-net').textContent =
     (last.net > 0 ? '+' : '') + last.net;
   document.getElementById('s-sessions').textContent =
-    rows.length + ' SESSIONS';
+    rows.length + ' SESSIONS' + (hasOHLC ? '' : ' · NO OHLC — RE-RUN BACKFILL');
 }
+
+/* ---------- resizable panes ---------- */
+
+const LAYOUT_KEY = 'sss-pane-heights';
+const MIN_H = 90;
+
+function saveLayout() {
+  const h = {};
+  document.querySelectorAll('.pane').forEach(p => h[p.id] = p.offsetHeight);
+  try { localStorage.setItem(LAYOUT_KEY, JSON.stringify(h)); } catch (e) {}
+}
+
+function loadLayout() {
+  try {
+    const h = JSON.parse(localStorage.getItem(LAYOUT_KEY) || '{}');
+    Object.entries(h).forEach(([id, px]) => {
+      const el = document.getElementById(id);
+      if (el && px >= MIN_H) el.style.height = px + 'px';
+    });
+  } catch (e) {}
+}
+
+let drag = null;
+
+document.addEventListener('pointerdown', e => {
+  const grip = e.target.closest('.grip');
+  if (!grip) return;
+  const above = document.getElementById(grip.dataset.above);
+  const below = document.getElementById(grip.dataset.below);
+  drag = {
+    grip, above, below,
+    y: e.clientY,
+    hAbove: above.offsetHeight,
+    hBelow: below.offsetHeight,
+  };
+  grip.classList.add('active');
+  grip.setPointerCapture(e.pointerId);
+  document.body.classList.add('resizing');
+});
+
+document.addEventListener('pointermove', e => {
+  if (!drag) return;
+  const dy = e.clientY - drag.y;
+  // grow one pane, shrink its neighbour, so total height stays put
+  const a = Math.max(MIN_H, drag.hAbove + dy);
+  const b = Math.max(MIN_H, drag.hBelow - dy);
+  if (a === MIN_H && drag.hAbove + dy < MIN_H) return;
+  if (b === MIN_H && drag.hBelow - dy < MIN_H) return;
+  drag.above.style.height = a + 'px';
+  drag.below.style.height = b + 'px';
+  charts.forEach(c => c.resize());
+});
+
+document.addEventListener('pointerup', () => {
+  if (!drag) return;
+  drag.grip.classList.remove('active');
+  document.body.classList.remove('resizing');
+  drag = null;
+  document.body.offsetHeight;
+  charts.forEach(c => c.resize());
+  saveLayout();
+});
+
+document.getElementById('reset-layout').addEventListener('click', () => {
+  document.getElementById('p-spy').style.height = '340px';
+  document.getElementById('p-up').style.height = '170px';
+  document.getElementById('p-down').style.height = '170px';
+  try { localStorage.removeItem(LAYOUT_KEY); } catch (e) {}
+  charts.forEach(c => c.resize());
+});
+
+/* ---------- range buttons ---------- */
 
 function applyRange(days) {
   render(days > 0 ? ALL.slice(-days) : ALL);
 }
 
 document.getElementById('controls').addEventListener('click', e => {
-  const btn = e.target.closest('button');
+  const btn = e.target.closest('button[data-days]');
   if (!btn) return;
-  document.querySelectorAll('#controls button')
+  document.querySelectorAll('#controls button[data-days]')
     .forEach(b => b.setAttribute('aria-pressed', b === btn));
   applyRange(parseInt(btn.dataset.days, 10));
 });
+
+/* ---------- go ---------- */
 
 fetch('history.csv?t=' + Date.now())
   .then(r => {
@@ -310,6 +470,7 @@ fetch('history.csv?t=' + Date.now())
     document.getElementById('msg').hidden = true;
     document.getElementById('panes').hidden = false;
     document.getElementById('controls').hidden = false;
+    loadLayout();
     applyRange(0);
   })
   .catch(err => {
