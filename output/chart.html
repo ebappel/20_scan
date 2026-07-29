@@ -160,7 +160,6 @@
   <span class="stat"><b id="s-bench-label">SPY</b> <b id="s-bench">—</b></span>
   <span class="stat up">UP <b id="s-up">—</b></span>
   <span class="stat down">DOWN <b id="s-down">—</b></span>
-  <span class="stat">NET <b id="s-net">—</b></span>
 </header>
 
 <div id="msg">Loading history…</div>
@@ -299,9 +298,7 @@ function renderTip(row) {
 
   html +=
     '<div class="t-row t-up"><span>Up 20%</span><span>' + row.up + '</span></div>' +
-    '<div class="t-row t-down"><span>Down 20%</span><span>' + row.down + '</span></div>' +
-    '<div class="t-row"><span>Net</span><span>' +
-      (row.net > 0 ? '+' : '') + row.net + '</span></div>';
+    '<div class="t-row t-down"><span>Down 20%</span><span>' + row.down + '</span></div>';
 
   if (sig) {
     html += '<div class="t-flag ' + sig[0] + '">' + sig[1] + '</div>';
@@ -486,8 +483,6 @@ function readout(row) {
   document.getElementById('s-bench').textContent = row[bench].close ?? '—';
   document.getElementById('s-up').textContent = row.up;
   document.getElementById('s-down').textContent = row.down;
-  document.getElementById('s-net').textContent =
-    (row.net > 0 ? '+' : '') + row.net;
 }
 
 /* ---------- benchmark switching ---------- */
