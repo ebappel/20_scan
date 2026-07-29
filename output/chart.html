@@ -15,8 +15,8 @@
     --dim: #70707a;
     --up: #26a65b;
     --down: #e04c4c;
-    --bull: #FFFFFF;
-    --bear: #b8434c;
+    --bull: #4ade80;
+    --bear: #f87171;
     --accent: #38bdf8;
   }
   * { box-sizing: border-box; }
@@ -82,6 +82,52 @@
   .grip:hover::after, .grip.active::after { background: var(--accent); }
   body.resizing { cursor: ns-resize; user-select: none; }
 
+  /* ---- hover tooltip ---- */
+  #tip {
+    position: fixed;
+    z-index: 50;
+    display: none;
+    pointer-events: none;
+    min-width: 168px;
+    padding: 8px 10px;
+    background: #131318;
+    border: 1px solid #33333c;
+    border-radius: 3px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.55);
+    font-size: 11px;
+    line-height: 1.55;
+  }
+  #tip .t-date {
+    color: var(--text);
+    font-weight: 600;
+    letter-spacing: .03em;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #2a2a32;
+  }
+  #tip .t-row { display: flex; justify-content: space-between; gap: 16px; }
+  #tip .t-row span:first-child { color: var(--dim); }
+  #tip .t-row span:last-child { color: var(--text); font-weight: 600; }
+  #tip .t-sep {
+    height: 1px; background: #2a2a32; margin: 6px 0;
+  }
+  #tip .t-up span:last-child { color: var(--up); }
+  #tip .t-down span:last-child { color: var(--down); }
+  #tip .t-ohlc {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    gap: 2px 10px;
+    color: var(--dim);
+  }
+  #tip .t-ohlc b { color: var(--text); font-weight: 600; }
+  #tip .t-flag {
+    margin-top: 6px; padding-top: 5px;
+    border-top: 1px solid #2a2a32;
+    font-size: 10px; letter-spacing: .04em;
+  }
+  #tip .t-flag.bull { color: var(--bull); }
+  #tip .t-flag.bear { color: var(--bear); }
+
   footer {
     flex: none;
     display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
@@ -138,6 +184,8 @@
   </div>
 </div>
 
+<div id="tip"></div>
+
 <footer id="controls" hidden>
   <span>RANGE</span>
   <button data-days="63">3M</button>
@@ -156,6 +204,7 @@ const CSS = getComputedStyle(document.documentElement);
 const col = n => CSS.getPropertyValue(n).trim();
 
 const msg = document.getElementById('msg');
+const tip = document.getElementById('tip');
 
 if (!LWC) {
   msg.textContent =
@@ -170,12 +219,12 @@ try { bench = localStorage.getItem(BENCH_KEY) || 'SPY'; } catch (e) {}
 let ROWS = [];
 let candleSeries, upSeries, downSeries;
 let charts = [];
+let hosts = [];
 let syncing = false;
 
 /* ---------- signal thresholds ----------
    Contrarian read. On the UP pane a low count is bullish and a high
-   count is bearish; the DOWN pane inverts that. Line colours follow
-   the meaning, not the pane. */
+   count is bearish; the DOWN pane inverts that. */
 const LOW = 20, HIGH = 100;
 let levelsOn = true;
 const priceLines = [];
@@ -211,6 +260,73 @@ function parseCSV(text) {
     };
   }).filter(r => r.time).sort((a, b) => a.time.localeCompare(b.time));
 }
+
+/* ---------- tooltip ---------- */
+
+const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+function prettyDate(iso) {
+  const [y, m, d] = iso.split('-').map(Number);
+  const dt = new Date(Date.UTC(y, m - 1, d));
+  return WEEKDAYS[dt.getUTCDay()] + ' ' + iso;
+}
+
+// Which threshold, if any, the day's counts have crossed.
+function signalFor(row) {
+  if (row.up > HIGH) return ['bear', 'UP > ' + HIGH + ' — froth'];
+  if (row.up < LOW) return ['bull', 'UP < ' + LOW + ' — washed out'];
+  if (row.down > HIGH) return ['bull', 'DOWN > ' + HIGH + ' — capitulation'];
+  if (row.down < LOW) return ['bear', 'DOWN < ' + LOW + ' — complacent'];
+  return null;
+}
+
+function renderTip(row) {
+  const b = row[bench];
+  const hasPrice = b.close !== null;
+  const sig = signalFor(row);
+
+  let html = '<div class="t-date">' + prettyDate(row.time) + '</div>';
+
+  if (hasPrice) {
+    html +=
+      '<div class="t-ohlc">' +
+        '<span>O</span><b>' + b.open + '</b>' +
+        '<span>H</span><b>' + b.high + '</b>' +
+        '<span>L</span><b>' + b.low + '</b>' +
+        '<span>C</span><b>' + b.close + '</b>' +
+      '</div><div class="t-sep"></div>';
+  }
+
+  html +=
+    '<div class="t-row t-up"><span>Up 20%</span><span>' + row.up + '</span></div>' +
+    '<div class="t-row t-down"><span>Down 20%</span><span>' + row.down + '</span></div>' +
+    '<div class="t-row"><span>Net</span><span>' +
+      (row.net > 0 ? '+' : '') + row.net + '</span></div>';
+
+  if (sig) {
+    html += '<div class="t-flag ' + sig[0] + '">' + sig[1] + '</div>';
+  }
+
+  tip.innerHTML = html;
+}
+
+function placeTip(hostEl, point) {
+  const box = hostEl.getBoundingClientRect();
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  const pad = 16;
+
+  let x = box.left + point.x + pad;
+  let y = box.top + point.y + pad;
+
+  // flip before running off the edge of the window
+  if (x + w > window.innerWidth - 8) x = box.left + point.x - w - pad;
+  if (y + h > window.innerHeight - 8) y = box.top + point.y - h - pad;
+
+  tip.style.left = Math.max(8, x) + 'px';
+  tip.style.top = Math.max(8, y) + 'px';
+}
+
+function hideTip() { tip.style.display = 'none'; }
 
 /* ---------- chart construction ---------- */
 
@@ -271,7 +387,7 @@ function addLevels(series, lowColor, highColor) {
       color,
       line: series.createPriceLine({
         price, color,
-        lineWidth: 2,
+        lineWidth: 1,
         lineStyle: LWC.LineStyle.Dashed,
         axisLabelVisible: true,
         title: String(price),
@@ -281,9 +397,11 @@ function addLevels(series, lowColor, highColor) {
 }
 
 function build() {
-  const spy = LWC.createChart(document.getElementById('h-spy'), baseOptions(false));
-  const up = LWC.createChart(document.getElementById('h-up'), baseOptions(false));
-  const down = LWC.createChart(document.getElementById('h-down'), baseOptions(true));
+  hosts = ['h-spy', 'h-up', 'h-down'].map(id => document.getElementById(id));
+
+  const spy = LWC.createChart(hosts[0], baseOptions(false));
+  const up = LWC.createChart(hosts[1], baseOptions(false));
+  const down = LWC.createChart(hosts[2], baseOptions(true));
   charts = [spy, up, down];
 
   candleSeries = spy.addCandlestickSeries({
@@ -311,9 +429,8 @@ function build() {
     autoscaleInfoProvider: makeProvider(),
   });
 
-  // UP pane: 20 is the bullish line, 100 the bearish one.
+  // UP pane: 20 is the bullish line, 100 the bearish one. DOWN inverts.
   addLevels(upSeries, col('--bull'), col('--bear'));
-  // DOWN pane: inverted.
   addLevels(downSeries, col('--bear'), col('--bull'));
 
   charts.forEach(src => {
@@ -327,27 +444,38 @@ function build() {
     });
   });
 
-  charts.forEach(src => {
+  charts.forEach((src, srcIdx) => {
     src.subscribeCrosshairMove(param => {
       if (syncing) return;
-      syncing = true;
-      if (!param.time) {
+
+      if (!param.time || !param.point) {
+        hideTip();
+        syncing = true;
         charts.forEach(t => { if (t !== src) t.clearCrosshairPosition(); });
-      } else {
-        const row = ROWS.find(r => r.time === param.time);
-        charts.forEach(t => {
-          if (t === src) return;
-          const s = t === charts[0] ? candleSeries
-                  : t === charts[1] ? upSeries : downSeries;
-          const v = t === charts[0] ? (row && row[bench].close)
-                  : t === charts[1] ? (row && row.up) : (row && row.down);
-          if (v != null) t.setCrosshairPosition(v, param.time, s);
-        });
-        readout(row);
+        syncing = false;
+        return;
       }
+
+      const row = ROWS.find(r => r.time === param.time);
+      if (!row) { hideTip(); return; }
+
+      syncing = true;
+      charts.forEach((t, i) => {
+        if (i === srcIdx) return;
+        const s = i === 0 ? candleSeries : i === 1 ? upSeries : downSeries;
+        const v = i === 0 ? row[bench].close : i === 1 ? row.up : row.down;
+        if (v != null) t.setCrosshairPosition(v, param.time, s);
+      });
       syncing = false;
+
+      readout(row);
+      renderTip(row);
+      tip.style.display = 'block';
+      placeTip(hosts[srcIdx], param.point);
     });
   });
+
+  document.getElementById('panes').addEventListener('pointerleave', hideTip);
 }
 
 /* ---------- header readout ---------- */
@@ -391,7 +519,6 @@ document.getElementById('bench-switch').addEventListener('click', e => {
   const btn = e.target.closest('button[data-sym]');
   if (!btn || btn.dataset.sym === bench) return;
 
-  // keep the current zoom across the switch
   const range = charts[0].timeScale().getVisibleLogicalRange();
   bench = btn.dataset.sym;
   try { localStorage.setItem(BENCH_KEY, bench); } catch (err) {}
@@ -399,6 +526,7 @@ document.getElementById('bench-switch').addEventListener('click', e => {
   const n = loadBenchmark();
   updateSessionNote(n);
   readout(ROWS[ROWS.length - 1]);
+  hideTip();
 
   if (range) {
     syncing = true;
@@ -479,6 +607,7 @@ let drag = null;
 document.addEventListener('pointerdown', e => {
   const grip = e.target.closest('.grip');
   if (!grip) return;
+  hideTip();
   const above = document.getElementById(grip.dataset.above);
   const below = document.getElementById(grip.dataset.below);
   drag = {
@@ -521,6 +650,8 @@ document.getElementById('controls').addEventListener('click', e => {
     .forEach(b => b.setAttribute('aria-pressed', b === btn));
   applyRange(parseInt(btn.dataset.days, 10));
 });
+
+window.addEventListener('blur', hideTip);
 
 /* ---------- go ---------- */
 
