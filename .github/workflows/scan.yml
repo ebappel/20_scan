@@ -3,7 +3,7 @@ name: SSS Nightly Scan
 on:
   schedule:
     # 22:30 UTC Mon-Fri = 6:30pm ET during EDT, 5:30pm ET during EST.
-    - cron: "30 22 * * 1-5"
+    - cron: "0 9 * * 2-6"
 
   workflow_dispatch:
     inputs:
