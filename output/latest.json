@@ -1,19 +1,19 @@
 {
   "scan": "SSS Study 20% Breadth",
-  "as_of": "2026-07-29",
-  "generated_at": "2026-07-30T11:07:35.366261+00:00",
+  "as_of": "2026-07-30",
+  "generated_at": "2026-07-31T11:30:11.119111+00:00",
   "benchmarks": {
     "SPY": {
-      "open": 739.97,
-      "high": 742.68,
-      "low": 729.1,
-      "close": 729.46
+      "open": 736.05,
+      "high": 742.45,
+      "low": 734.59,
+      "close": 741.69
     },
     "QQQ": {
-      "open": 675.5,
-      "high": 680.05,
-      "low": 661.14,
-      "close": 661.73
+      "open": 674.76,
+      "high": 685.12,
+      "low": 673.3,
+      "close": 683.55
     }
   },
   "criteria": {
@@ -26,1552 +26,744 @@
     "min_price": 5.0
   },
   "breadth": {
-    "up_count": 62,
-    "down_count": 130,
-    "net": -68,
-    "up_share": 0.3229,
-    "up_down_ratio": 0.48
+    "up_count": 58,
+    "down_count": 33,
+    "net": 25,
+    "up_share": 0.6374,
+    "up_down_ratio": 1.76
   },
-  "up_count": 62,
-  "down_count": 130,
+  "up_count": 58,
+  "down_count": 33,
   "up": [
     {
       "ticker": "DFNS",
-      "close": 50.22,
-      "close_5d_ago": 4.7,
-      "pct_change_5d": 968.51,
-      "volume": 21247473,
-      "min_vol_3d": 21247473
+      "close": 84.98,
+      "close_5d_ago": 3.9,
+      "pct_change_5d": 2078.97,
+      "volume": 9689805,
+      "min_vol_3d": 9689805
     },
     {
-      "ticker": "BIYA",
-      "close": 5.83,
-      "close_5d_ago": 2.99,
-      "pct_change_5d": 94.98,
-      "volume": 2964219,
-      "min_vol_3d": 2964219
-    },
-    {
-      "ticker": "JEM",
-      "close": 5.41,
-      "close_5d_ago": 3.53,
-      "pct_change_5d": 53.26,
-      "volume": 207775,
-      "min_vol_3d": 207775
-    },
-    {
-      "ticker": "RNG",
-      "close": 57.58,
-      "close_5d_ago": 37.66,
-      "pct_change_5d": 52.89,
-      "volume": 2481822,
-      "min_vol_3d": 2481822
+      "ticker": "MF",
+      "close": 8.96,
+      "close_5d_ago": 5.72,
+      "pct_change_5d": 56.64,
+      "volume": 891320,
+      "min_vol_3d": 187063
     },
     {
       "ticker": "HURN",
-      "close": 170.37,
-      "close_5d_ago": 111.54,
-      "pct_change_5d": 52.74,
-      "volume": 1447120,
-      "min_vol_3d": 272911
+      "close": 163.76,
+      "close_5d_ago": 109.19,
+      "pct_change_5d": 49.98,
+      "volume": 955755,
+      "min_vol_3d": 284785
     },
     {
-      "ticker": "RACC",
-      "close": 16.5,
-      "close_5d_ago": 11.01,
-      "pct_change_5d": 49.86,
-      "volume": 568858,
-      "min_vol_3d": 117117
+      "ticker": "MKTX",
+      "close": 162.76,
+      "close_5d_ago": 114.31,
+      "pct_change_5d": 42.38,
+      "volume": 9443548,
+      "min_vol_3d": 446450
     },
     {
       "ticker": "SAFT",
-      "close": 103.1,
-      "close_5d_ago": 72.5,
-      "pct_change_5d": 42.21,
-      "volume": 525519,
-      "min_vol_3d": 525519
+      "close": 103.19,
+      "close_5d_ago": 72.94,
+      "pct_change_5d": 41.47,
+      "volume": 403347,
+      "min_vol_3d": 403347
     },
     {
-      "ticker": "OTLY",
-      "close": 15.26,
-      "close_5d_ago": 10.78,
-      "pct_change_5d": 41.56,
-      "volume": 392202,
-      "min_vol_3d": 318448
+      "ticker": "EFOR",
+      "close": 27.57,
+      "close_5d_ago": 19.64,
+      "pct_change_5d": 40.38,
+      "volume": 1852922,
+      "min_vol_3d": 1365960
     },
     {
-      "ticker": "GSHD",
-      "close": 70.72,
-      "close_5d_ago": 51.4,
-      "pct_change_5d": 37.59,
-      "volume": 839469,
-      "min_vol_3d": 620045
+      "ticker": "RNG",
+      "close": 53.48,
+      "close_5d_ago": 38.62,
+      "pct_change_5d": 38.48,
+      "volume": 2350904,
+      "min_vol_3d": 2350904
     },
     {
-      "ticker": "MANH",
-      "close": 204.02,
-      "close_5d_ago": 149.11,
-      "pct_change_5d": 36.83,
-      "volume": 2870448,
-      "min_vol_3d": 912647
-    },
-    {
-      "ticker": "BLKB",
-      "close": 42.18,
-      "close_5d_ago": 30.92,
-      "pct_change_5d": 36.42,
-      "volume": 1783666,
-      "min_vol_3d": 786674
+      "ticker": "INLF",
+      "close": 5.18,
+      "close_5d_ago": 3.75,
+      "pct_change_5d": 38.13,
+      "volume": 2159218,
+      "min_vol_3d": 734109
     },
     {
       "ticker": "CBZ",
-      "close": 54.9,
-      "close_5d_ago": 40.34,
-      "pct_change_5d": 36.09,
-      "volume": 16959053,
-      "min_vol_3d": 915144
+      "close": 55.25,
+      "close_5d_ago": 40.25,
+      "pct_change_5d": 37.27,
+      "volume": 4692065,
+      "min_vol_3d": 1097156
     },
     {
-      "ticker": "FBRX",
-      "close": 76.53,
-      "close_5d_ago": 56.63,
-      "pct_change_5d": 35.14,
-      "volume": 7249702,
-      "min_vol_3d": 2571079
+      "ticker": "BHC",
+      "close": 6.03,
+      "close_5d_ago": 4.45,
+      "pct_change_5d": 35.51,
+      "volume": 18662852,
+      "min_vol_3d": 1294890
     },
     {
-      "ticker": "EXLS",
-      "close": 35.99,
-      "close_5d_ago": 26.83,
-      "pct_change_5d": 34.14,
-      "volume": 7662966,
-      "min_vol_3d": 1707382
+      "ticker": "GFUZ",
+      "close": 9.38,
+      "close_5d_ago": 6.96,
+      "pct_change_5d": 34.77,
+      "volume": 446783,
+      "min_vol_3d": 286214
     },
     {
-      "ticker": "THC",
-      "close": 257.62,
-      "close_5d_ago": 195.35,
-      "pct_change_5d": 31.88,
-      "volume": 1284411,
-      "min_vol_3d": 1284411
-    },
-    {
-      "ticker": "AVTR",
-      "close": 14.38,
-      "close_5d_ago": 10.95,
-      "pct_change_5d": 31.32,
-      "volume": 42795041,
-      "min_vol_3d": 16504928
-    },
-    {
-      "ticker": "CLW",
-      "close": 21.61,
-      "close_5d_ago": 16.63,
-      "pct_change_5d": 29.95,
-      "volume": 1110164,
-      "min_vol_3d": 149686
-    },
-    {
-      "ticker": "CTSH",
-      "close": 55.97,
-      "close_5d_ago": 43.18,
-      "pct_change_5d": 29.62,
-      "volume": 18263607,
-      "min_vol_3d": 7416160
-    },
-    {
-      "ticker": "KNSA",
-      "close": 80.92,
-      "close_5d_ago": 62.44,
-      "pct_change_5d": 29.6,
-      "volume": 1380536,
-      "min_vol_3d": 834534
-    },
-    {
-      "ticker": "NVEC",
-      "close": 112.26,
-      "close_5d_ago": 86.68,
-      "pct_change_5d": 29.51,
-      "volume": 258295,
-      "min_vol_3d": 249905
+      "ticker": "CMCO",
+      "close": 20.68,
+      "close_5d_ago": 15.53,
+      "pct_change_5d": 33.16,
+      "volume": 2397768,
+      "min_vol_3d": 611622
     },
     {
       "ticker": "VRRM",
-      "close": 5.1,
-      "close_5d_ago": 4,
-      "pct_change_5d": 27.5,
-      "volume": 26128200,
-      "min_vol_3d": 4288258
-    },
-    {
-      "ticker": "APPN",
-      "close": 28.74,
-      "close_5d_ago": 22.64,
-      "pct_change_5d": 26.94,
-      "volume": 1192508,
-      "min_vol_3d": 813138
-    },
-    {
-      "ticker": "WDAY",
-      "close": 168.01,
-      "close_5d_ago": 132.42,
-      "pct_change_5d": 26.88,
-      "volume": 7249769,
-      "min_vol_3d": 6868585
-    },
-    {
-      "ticker": "PAY",
-      "close": 36.7,
-      "close_5d_ago": 29.05,
-      "pct_change_5d": 26.33,
-      "volume": 1361636,
-      "min_vol_3d": 1102418
-    },
-    {
-      "ticker": "WIX",
-      "close": 61.22,
-      "close_5d_ago": 48.66,
-      "pct_change_5d": 25.81,
-      "volume": 1873617,
-      "min_vol_3d": 1598819
-    },
-    {
-      "ticker": "LAD",
-      "close": 427.48,
-      "close_5d_ago": 339.95,
-      "pct_change_5d": 25.75,
-      "volume": 1717083,
-      "min_vol_3d": 259831
-    },
-    {
-      "ticker": "IT",
-      "close": 165.65,
-      "close_5d_ago": 132.1,
-      "pct_change_5d": 25.4,
-      "volume": 1431901,
-      "min_vol_3d": 1127864
-    },
-    {
-      "ticker": "DXC",
-      "close": 11.77,
-      "close_5d_ago": 9.41,
-      "pct_change_5d": 25.08,
-      "volume": 6164471,
-      "min_vol_3d": 4058007
-    },
-    {
-      "ticker": "SAP",
-      "close": 185.99,
-      "close_5d_ago": 148.75,
-      "pct_change_5d": 25.04,
-      "volume": 5968994,
-      "min_vol_3d": 4238738
-    },
-    {
-      "ticker": "GWRE",
-      "close": 167.26,
-      "close_5d_ago": 133.97,
-      "pct_change_5d": 24.85,
-      "volume": 1657140,
-      "min_vol_3d": 958473
-    },
-    {
-      "ticker": "IQV",
-      "close": 247.56,
-      "close_5d_ago": 198.52,
-      "pct_change_5d": 24.7,
-      "volume": 2241771,
-      "min_vol_3d": 2160161
-    },
-    {
-      "ticker": "GLOB",
-      "close": 38.15,
-      "close_5d_ago": 30.67,
-      "pct_change_5d": 24.39,
-      "volume": 2250082,
-      "min_vol_3d": 1126323
-    },
-    {
-      "ticker": "BSY",
-      "close": 36.96,
-      "close_5d_ago": 29.74,
-      "pct_change_5d": 24.28,
-      "volume": 4859050,
-      "min_vol_3d": 3340781
-    },
-    {
-      "ticker": "IMAX",
-      "close": 48.66,
-      "close_5d_ago": 39.3,
-      "pct_change_5d": 23.82,
-      "volume": 2166639,
-      "min_vol_3d": 1455425
-    },
-    {
-      "ticker": "ASAN",
-      "close": 8.51,
-      "close_5d_ago": 6.88,
-      "pct_change_5d": 23.69,
-      "volume": 5790394,
-      "min_vol_3d": 5790394
-    },
-    {
-      "ticker": "ACN",
-      "close": 173.17,
-      "close_5d_ago": 140.09,
-      "pct_change_5d": 23.61,
-      "volume": 10919941,
-      "min_vol_3d": 7772860
-    },
-    {
-      "ticker": "EPAM",
-      "close": 106.89,
-      "close_5d_ago": 86.57,
-      "pct_change_5d": 23.47,
-      "volume": 1996345,
-      "min_vol_3d": 1148142
-    },
-    {
-      "ticker": "MH",
-      "close": 11.2,
-      "close_5d_ago": 9.1,
-      "pct_change_5d": 23.08,
-      "volume": 588830,
-      "min_vol_3d": 331340
-    },
-    {
-      "ticker": "ITRI",
-      "close": 102.33,
-      "close_5d_ago": 83.21,
-      "pct_change_5d": 22.98,
-      "volume": 2704423,
-      "min_vol_3d": 2326704
-    },
-    {
-      "ticker": "GRMN",
-      "close": 294.83,
-      "close_5d_ago": 240.51,
-      "pct_change_5d": 22.59,
-      "volume": 3664678,
-      "min_vol_3d": 1198305
-    },
-    {
-      "ticker": "HUBS",
-      "close": 251.12,
-      "close_5d_ago": 204.9,
-      "pct_change_5d": 22.56,
-      "volume": 1541032,
-      "min_vol_3d": 1541032
-    },
-    {
-      "ticker": "G",
-      "close": 36.71,
-      "close_5d_ago": 30.01,
-      "pct_change_5d": 22.33,
-      "volume": 3552198,
-      "min_vol_3d": 1292644
-    },
-    {
-      "ticker": "TEAM",
-      "close": 104.28,
-      "close_5d_ago": 85.4,
-      "pct_change_5d": 22.11,
-      "volume": 5475242,
-      "min_vol_3d": 5475242
-    },
-    {
-      "ticker": "MNDY",
-      "close": 90.25,
-      "close_5d_ago": 73.91,
-      "pct_change_5d": 22.11,
-      "volume": 1796628,
-      "min_vol_3d": 1494540
-    },
-    {
-      "ticker": "PD",
-      "close": 10.76,
-      "close_5d_ago": 8.82,
-      "pct_change_5d": 22.0,
-      "volume": 1563789,
-      "min_vol_3d": 1159684
-    },
-    {
-      "ticker": "ATRC",
-      "close": 40.89,
-      "close_5d_ago": 33.52,
-      "pct_change_5d": 21.99,
-      "volume": 1387939,
-      "min_vol_3d": 1071499
-    },
-    {
-      "ticker": "TRI",
-      "close": 106.34,
-      "close_5d_ago": 87.33,
-      "pct_change_5d": 21.77,
-      "volume": 3644926,
-      "min_vol_3d": 2604284
-    },
-    {
-      "ticker": "INTA",
-      "close": 31.67,
-      "close_5d_ago": 26.07,
-      "pct_change_5d": 21.48,
-      "volume": 764690,
-      "min_vol_3d": 755501
-    },
-    {
-      "ticker": "DOCU",
-      "close": 58.17,
-      "close_5d_ago": 47.89,
-      "pct_change_5d": 21.47,
-      "volume": 4478683,
-      "min_vol_3d": 3107225
-    },
-    {
-      "ticker": "GDYN",
-      "close": 6.8,
-      "close_5d_ago": 5.6,
-      "pct_change_5d": 21.43,
-      "volume": 3955756,
-      "min_vol_3d": 1529120
-    },
-    {
-      "ticker": "NOW",
-      "close": 115.76,
-      "close_5d_ago": 95.46,
-      "pct_change_5d": 21.27,
-      "volume": 40448128,
-      "min_vol_3d": 32533721
-    },
-    {
-      "ticker": "PAYC",
-      "close": 168.92,
-      "close_5d_ago": 139.3,
-      "pct_change_5d": 21.26,
-      "volume": 1055789,
-      "min_vol_3d": 884707
-    },
-    {
-      "ticker": "ROP",
-      "close": 408.07,
-      "close_5d_ago": 336.71,
-      "pct_change_5d": 21.19,
-      "volume": 1274174,
-      "min_vol_3d": 780756
-    },
-    {
-      "ticker": "WEX",
-      "close": 188.41,
-      "close_5d_ago": 155.68,
-      "pct_change_5d": 21.02,
-      "volume": 767188,
-      "min_vol_3d": 767188
-    },
-    {
-      "ticker": "ADBE",
-      "close": 263.43,
-      "close_5d_ago": 218.36,
-      "pct_change_5d": 20.64,
-      "volume": 9881783,
-      "min_vol_3d": 5543598
-    },
-    {
-      "ticker": "VERX",
-      "close": 13.32,
-      "close_5d_ago": 11.05,
-      "pct_change_5d": 20.54,
-      "volume": 2771570,
-      "min_vol_3d": 2358560
-    },
-    {
-      "ticker": "ADSK",
-      "close": 245.25,
-      "close_5d_ago": 203.5,
-      "pct_change_5d": 20.52,
-      "volume": 2432088,
-      "min_vol_3d": 2432088
-    },
-    {
-      "ticker": "TTAN",
-      "close": 84.22,
-      "close_5d_ago": 69.9,
-      "pct_change_5d": 20.49,
-      "volume": 3170016,
-      "min_vol_3d": 1126411
+      "close": 5.14,
+      "close_5d_ago": 3.9,
+      "pct_change_5d": 31.79,
+      "volume": 8249214,
+      "min_vol_3d": 7780200
     },
     {
       "ticker": "PCOR",
-      "close": 50.16,
-      "close_5d_ago": 41.65,
-      "pct_change_5d": 20.43,
-      "volume": 4173290,
-      "min_vol_3d": 2543040
+      "close": 53.79,
+      "close_5d_ago": 41.08,
+      "pct_change_5d": 30.94,
+      "volume": 7605988,
+      "min_vol_3d": 3131893
     },
     {
-      "ticker": "CLF",
-      "close": 11.38,
-      "close_5d_ago": 9.45,
-      "pct_change_5d": 20.42,
-      "volume": 32012047,
-      "min_vol_3d": 32012047
+      "ticker": "MANH",
+      "close": 190.97,
+      "close_5d_ago": 147.43,
+      "pct_change_5d": 29.53,
+      "volume": 1755775,
+      "min_vol_3d": 986786
     },
     {
-      "ticker": "EDU",
-      "close": 58.58,
-      "close_5d_ago": 48.68,
+      "ticker": "CLW",
+      "close": 21.15,
+      "close_5d_ago": 16.4,
+      "pct_change_5d": 28.96,
+      "volume": 293339,
+      "min_vol_3d": 203403
+    },
+    {
+      "ticker": "FBRX",
+      "close": 76.98,
+      "close_5d_ago": 59.7,
+      "pct_change_5d": 28.94,
+      "volume": 2368055,
+      "min_vol_3d": 2368055
+    },
+    {
+      "ticker": "PRLD",
+      "close": 5.05,
+      "close_5d_ago": 3.93,
+      "pct_change_5d": 28.5,
+      "volume": 329782,
+      "min_vol_3d": 329782
+    },
+    {
+      "ticker": "BLKB",
+      "close": 40.08,
+      "close_5d_ago": 31.25,
+      "pct_change_5d": 28.26,
+      "volume": 1113584,
+      "min_vol_3d": 1113584
+    },
+    {
+      "ticker": "EXLS",
+      "close": 34.36,
+      "close_5d_ago": 26.88,
+      "pct_change_5d": 27.83,
+      "volume": 4802290,
+      "min_vol_3d": 3169408
+    },
+    {
+      "ticker": "AGEN",
+      "close": 7.91,
+      "close_5d_ago": 6.19,
+      "pct_change_5d": 27.79,
+      "volume": 3002899,
+      "min_vol_3d": 1857226
+    },
+    {
+      "ticker": "FIVN",
+      "close": 27.66,
+      "close_5d_ago": 21.75,
+      "pct_change_5d": 27.2,
+      "volume": 6036163,
+      "min_vol_3d": 2210684
+    },
+    {
+      "ticker": "THC",
+      "close": 252.73,
+      "close_5d_ago": 199.02,
+      "pct_change_5d": 26.99,
+      "volume": 1226480,
+      "min_vol_3d": 1226480
+    },
+    {
+      "ticker": "TRAX",
+      "close": 47.78,
+      "close_5d_ago": 37.64,
+      "pct_change_5d": 26.94,
+      "volume": 970188,
+      "min_vol_3d": 582220
+    },
+    {
+      "ticker": "ULCC",
+      "close": 6.98,
+      "close_5d_ago": 5.5,
+      "pct_change_5d": 26.91,
+      "volume": 5693850,
+      "min_vol_3d": 5593883
+    },
+    {
+      "ticker": "LCID",
+      "close": 8.12,
+      "close_5d_ago": 6.45,
+      "pct_change_5d": 25.89,
+      "volume": 14136208,
+      "min_vol_3d": 14136208
+    },
+    {
+      "ticker": "GDYN",
+      "close": 7.06,
+      "close_5d_ago": 5.61,
+      "pct_change_5d": 25.85,
+      "volume": 3118157,
+      "min_vol_3d": 1529120
+    },
+    {
+      "ticker": "CTSH",
+      "close": 53.9,
+      "close_5d_ago": 43.01,
+      "pct_change_5d": 25.31,
+      "volume": 12608580,
+      "min_vol_3d": 12608580
+    },
+    {
+      "ticker": "MCS",
+      "close": 29.69,
+      "close_5d_ago": 23.78,
+      "pct_change_5d": 24.85,
+      "volume": 650380,
+      "min_vol_3d": 257525
+    },
+    {
+      "ticker": "KNSA",
+      "close": 78.2,
+      "close_5d_ago": 63.05,
+      "pct_change_5d": 24.03,
+      "volume": 947586,
+      "min_vol_3d": 947586
+    },
+    {
+      "ticker": "GRMN",
+      "close": 297.55,
+      "close_5d_ago": 240.1,
+      "pct_change_5d": 23.93,
+      "volume": 1350680,
+      "min_vol_3d": 1198305
+    },
+    {
+      "ticker": "WDAY",
+      "close": 158.11,
+      "close_5d_ago": 127.87,
+      "pct_change_5d": 23.65,
+      "volume": 6823389,
+      "min_vol_3d": 6823389
+    },
+    {
+      "ticker": "SAP",
+      "close": 180.88,
+      "close_5d_ago": 146.38,
+      "pct_change_5d": 23.57,
+      "volume": 4112844,
+      "min_vol_3d": 4112844
+    },
+    {
+      "ticker": "BAX",
+      "close": 26.75,
+      "close_5d_ago": 21.67,
+      "pct_change_5d": 23.44,
+      "volume": 22671820,
+      "min_vol_3d": 7104021
+    },
+    {
+      "ticker": "BFLY",
+      "close": 8.17,
+      "close_5d_ago": 6.62,
+      "pct_change_5d": 23.41,
+      "volume": 9982101,
+      "min_vol_3d": 4296515
+    },
+    {
+      "ticker": "PRCH",
+      "close": 14.34,
+      "close_5d_ago": 11.63,
+      "pct_change_5d": 23.3,
+      "volume": 4727610,
+      "min_vol_3d": 1471076
+    },
+    {
+      "ticker": "MNDY",
+      "close": 88.16,
+      "close_5d_ago": 71.74,
+      "pct_change_5d": 22.89,
+      "volume": 2275903,
+      "min_vol_3d": 1494540
+    },
+    {
+      "ticker": "HUBS",
+      "close": 233.1,
+      "close_5d_ago": 190.01,
+      "pct_change_5d": 22.68,
+      "volume": 1917463,
+      "min_vol_3d": 1541032
+    },
+    {
+      "ticker": "TEAM",
+      "close": 98.12,
+      "close_5d_ago": 80.15,
+      "pct_change_5d": 22.42,
+      "volume": 3945079,
+      "min_vol_3d": 3945079
+    },
+    {
+      "ticker": "CORT",
+      "close": 118.32,
+      "close_5d_ago": 96.66,
+      "pct_change_5d": 22.41,
+      "volume": 4498077,
+      "min_vol_3d": 823417
+    },
+    {
+      "ticker": "AVTR",
+      "close": 13.86,
+      "close_5d_ago": 11.35,
+      "pct_change_5d": 22.11,
+      "volume": 17464112,
+      "min_vol_3d": 17464112
+    },
+    {
+      "ticker": "INTA",
+      "close": 32.07,
+      "close_5d_ago": 26.27,
+      "pct_change_5d": 22.08,
+      "volume": 968799,
+      "min_vol_3d": 764690
+    },
+    {
+      "ticker": "ATRC",
+      "close": 40.15,
+      "close_5d_ago": 33,
+      "pct_change_5d": 21.67,
+      "volume": 906829,
+      "min_vol_3d": 906829
+    },
+    {
+      "ticker": "JBLU",
+      "close": 6.07,
+      "close_5d_ago": 4.99,
+      "pct_change_5d": 21.64,
+      "volume": 44886780,
+      "min_vol_3d": 44886780
+    },
+    {
+      "ticker": "JEM",
+      "close": 5.76,
+      "close_5d_ago": 4.74,
+      "pct_change_5d": 21.52,
+      "volume": 442741,
+      "min_vol_3d": 207775
+    },
+    {
+      "ticker": "PATH",
+      "close": 12.37,
+      "close_5d_ago": 10.2,
+      "pct_change_5d": 21.27,
+      "volume": 66520713,
+      "min_vol_3d": 46839039
+    },
+    {
+      "ticker": "LAD",
+      "close": 405.03,
+      "close_5d_ago": 334.02,
+      "pct_change_5d": 21.26,
+      "volume": 798956,
+      "min_vol_3d": 427077
+    },
+    {
+      "ticker": "DXC",
+      "close": 11.24,
+      "close_5d_ago": 9.27,
+      "pct_change_5d": 21.25,
+      "volume": 5463115,
+      "min_vol_3d": 4721745
+    },
+    {
+      "ticker": "PAY",
+      "close": 34.87,
+      "close_5d_ago": 28.76,
+      "pct_change_5d": 21.24,
+      "volume": 1890027,
+      "min_vol_3d": 1329046
+    },
+    {
+      "ticker": "FIRY",
+      "close": 9.77,
+      "close_5d_ago": 8.07,
+      "pct_change_5d": 21.07,
+      "volume": 299335,
+      "min_vol_3d": 299335
+    },
+    {
+      "ticker": "ASAN",
+      "close": 7.95,
+      "close_5d_ago": 6.57,
+      "pct_change_5d": 21.0,
+      "volume": 7692659,
+      "min_vol_3d": 5790394
+    },
+    {
+      "ticker": "APPN",
+      "close": 26.48,
+      "close_5d_ago": 21.96,
+      "pct_change_5d": 20.58,
+      "volume": 1078720,
+      "min_vol_3d": 836240
+    },
+    {
+      "ticker": "PTC",
+      "close": 136.3,
+      "close_5d_ago": 113.05,
+      "pct_change_5d": 20.57,
+      "volume": 3375813,
+      "min_vol_3d": 1392286
+    },
+    {
+      "ticker": "EPAM",
+      "close": 103.66,
+      "close_5d_ago": 86.14,
       "pct_change_5d": 20.34,
-      "volume": 1775434,
-      "min_vol_3d": 815009
+      "volume": 2275745,
+      "min_vol_3d": 1996345
     },
     {
-      "ticker": "KD",
-      "close": 14.01,
-      "close_5d_ago": 11.65,
-      "pct_change_5d": 20.26,
-      "volume": 6152292,
-      "min_vol_3d": 4665381
+      "ticker": "CMG",
+      "close": 38.52,
+      "close_5d_ago": 32.01,
+      "pct_change_5d": 20.34,
+      "volume": 35584369,
+      "min_vol_3d": 13825768
+    },
+    {
+      "ticker": "NXTC",
+      "close": 5.03,
+      "close_5d_ago": 4.18,
+      "pct_change_5d": 20.33,
+      "volume": 883089,
+      "min_vol_3d": 236313
+    },
+    {
+      "ticker": "PD",
+      "close": 10.37,
+      "close_5d_ago": 8.63,
+      "pct_change_5d": 20.16,
+      "volume": 1581759,
+      "min_vol_3d": 1528750
+    },
+    {
+      "ticker": "NAVN",
+      "close": 26.71,
+      "close_5d_ago": 22.23,
+      "pct_change_5d": 20.15,
+      "volume": 2647359,
+      "min_vol_3d": 2647359
     }
   ],
   "down": [
     {
       "ticker": "MPLT",
-      "close": 15.02,
-      "close_5d_ago": 35.31,
-      "pct_change_5d": -57.46,
-      "volume": 3093127,
+      "close": 14.03,
+      "close_5d_ago": 35.23,
+      "pct_change_5d": -60.18,
+      "volume": 3160832,
       "min_vol_3d": 3093127
     },
     {
-      "ticker": "REPL",
-      "close": 5.41,
-      "close_5d_ago": 10.75,
-      "pct_change_5d": -49.67,
-      "volume": 14296364,
-      "min_vol_3d": 8460299
+      "ticker": "FFAI",
+      "close": 5.35,
+      "close_5d_ago": 10.76,
+      "pct_change_5d": -50.26,
+      "volume": 3036801,
+      "min_vol_3d": 792399
     },
     {
-      "ticker": "SHAZ",
-      "close": 40.09,
-      "close_5d_ago": 70.49,
-      "pct_change_5d": -43.13,
-      "volume": 3998444,
-      "min_vol_3d": 2342368
+      "ticker": "CCB",
+      "close": 39.91,
+      "close_5d_ago": 71.41,
+      "pct_change_5d": -44.11,
+      "volume": 2058800,
+      "min_vol_3d": 131110
     },
     {
-      "ticker": "BAND",
-      "close": 36.95,
-      "close_5d_ago": 64.37,
-      "pct_change_5d": -42.6,
-      "volume": 4487073,
-      "min_vol_3d": 984785
+      "ticker": "ADVB",
+      "close": 10.08,
+      "close_5d_ago": 16.78,
+      "pct_change_5d": -39.93,
+      "volume": 149476,
+      "min_vol_3d": 135356
     },
     {
       "ticker": "VCX",
-      "close": 34.92,
-      "close_5d_ago": 60.11,
-      "pct_change_5d": -41.91,
-      "volume": 234845,
-      "min_vol_3d": 234845
+      "close": 35.14,
+      "close_5d_ago": 58.4,
+      "pct_change_5d": -39.83,
+      "volume": 192169,
+      "min_vol_3d": 192169
     },
     {
-      "ticker": "FRVO",
-      "close": 17.08,
-      "close_5d_ago": 27.9,
-      "pct_change_5d": -38.78,
-      "volume": 6865230,
-      "min_vol_3d": 1277880
+      "ticker": "BAND",
+      "close": 38.83,
+      "close_5d_ago": 58.74,
+      "pct_change_5d": -33.9,
+      "volume": 2308444,
+      "min_vol_3d": 1564982
     },
     {
-      "ticker": "SNDK",
-      "close": 1015.89,
-      "close_5d_ago": 1599.27,
-      "pct_change_5d": -36.48,
-      "volume": 24491072,
-      "min_vol_3d": 21275560
+      "ticker": "SHAZ",
+      "close": 48.77,
+      "close_5d_ago": 70.17,
+      "pct_change_5d": -30.5,
+      "volume": 4495611,
+      "min_vol_3d": 3998444
     },
     {
-      "ticker": "AMKR",
-      "close": 42.73,
-      "close_5d_ago": 66.97,
-      "pct_change_5d": -36.2,
-      "volume": 12166906,
-      "min_vol_3d": 11533862
+      "ticker": "TZOO",
+      "close": 7.13,
+      "close_5d_ago": 10,
+      "pct_change_5d": -28.7,
+      "volume": 178995,
+      "min_vol_3d": 178995
     },
     {
-      "ticker": "BRUN",
-      "close": 15.64,
-      "close_5d_ago": 24.22,
-      "pct_change_5d": -35.43,
-      "volume": 2838406,
-      "min_vol_3d": 2838406
-    },
-    {
-      "ticker": "ICHR",
-      "close": 62.25,
-      "close_5d_ago": 95.33,
-      "pct_change_5d": -34.7,
-      "volume": 989967,
-      "min_vol_3d": 989967
+      "ticker": "CHRW",
+      "close": 146.92,
+      "close_5d_ago": 205.51,
+      "pct_change_5d": -28.51,
+      "volume": 7410711,
+      "min_vol_3d": 2752546
     },
     {
       "ticker": "MXL",
-      "close": 57.25,
-      "close_5d_ago": 86.8,
-      "pct_change_5d": -34.04,
-      "volume": 3054154,
+      "close": 66.92,
+      "close_5d_ago": 91.24,
+      "pct_change_5d": -26.65,
+      "volume": 3948910,
       "min_vol_3d": 3054154
     },
     {
-      "ticker": "NBIS",
-      "close": 148.22,
-      "close_5d_ago": 218.16,
-      "pct_change_5d": -32.06,
-      "volume": 39775891,
-      "min_vol_3d": 18169063
-    },
-    {
-      "ticker": "LBRT",
-      "close": 17.09,
-      "close_5d_ago": 25.14,
-      "pct_change_5d": -32.02,
-      "volume": 6433866,
-      "min_vol_3d": 6433866
-    },
-    {
-      "ticker": "CEPL",
-      "close": 7.12,
-      "close_5d_ago": 10.4,
-      "pct_change_5d": -31.54,
-      "volume": 386903,
-      "min_vol_3d": 386903
-    },
-    {
-      "ticker": "WOLF",
-      "close": 20.06,
-      "close_5d_ago": 29.27,
-      "pct_change_5d": -31.47,
-      "volume": 4737379,
-      "min_vol_3d": 3635605
-    },
-    {
-      "ticker": "UCTT",
-      "close": 69.57,
-      "close_5d_ago": 101.46,
-      "pct_change_5d": -31.43,
-      "volume": 2100088,
-      "min_vol_3d": 1750863
-    },
-    {
-      "ticker": "STRL",
-      "close": 494.24,
-      "close_5d_ago": 719.34,
-      "pct_change_5d": -31.29,
-      "volume": 991209,
-      "min_vol_3d": 526534
-    },
-    {
-      "ticker": "SEI",
-      "close": 43.42,
-      "close_5d_ago": 63.04,
-      "pct_change_5d": -31.12,
-      "volume": 5304063,
-      "min_vol_3d": 4147151
-    },
-    {
-      "ticker": "ORN",
-      "close": 9.08,
-      "close_5d_ago": 13.15,
-      "pct_change_5d": -30.95,
-      "volume": 3592770,
-      "min_vol_3d": 478308
-    },
-    {
-      "ticker": "AAOI",
-      "close": 76.52,
-      "close_5d_ago": 110.52,
-      "pct_change_5d": -30.76,
-      "volume": 12204268,
-      "min_vol_3d": 6662393
-    },
-    {
-      "ticker": "VEEE",
-      "close": 12.94,
-      "close_5d_ago": 18.56,
-      "pct_change_5d": -30.28,
-      "volume": 179846,
-      "min_vol_3d": 179846
-    },
-    {
-      "ticker": "AXTI",
-      "close": 36.97,
-      "close_5d_ago": 52.98,
-      "pct_change_5d": -30.22,
-      "volume": 8028139,
-      "min_vol_3d": 5594187
-    },
-    {
-      "ticker": "QMLS",
-      "close": 6.4,
-      "close_5d_ago": 9.16,
-      "pct_change_5d": -30.13,
-      "volume": 207997,
-      "min_vol_3d": 207997
-    },
-    {
-      "ticker": "AEHR",
-      "close": 65.4,
-      "close_5d_ago": 93.54,
-      "pct_change_5d": -30.08,
-      "volume": 2477439,
-      "min_vol_3d": 2292790
-    },
-    {
-      "ticker": "AESI",
-      "close": 10.18,
-      "close_5d_ago": 14.55,
-      "pct_change_5d": -30.03,
-      "volume": 4756816,
-      "min_vol_3d": 4756816
+      "ticker": "SDOT",
+      "close": 14.04,
+      "close_5d_ago": 19.11,
+      "pct_change_5d": -26.53,
+      "volume": 222819,
+      "min_vol_3d": 222819
     },
     {
       "ticker": "PSN",
-      "close": 40.32,
-      "close_5d_ago": 57.58,
-      "pct_change_5d": -29.98,
-      "volume": 12088458,
-      "min_vol_3d": 835567
+      "close": 43.17,
+      "close_5d_ago": 58.46,
+      "pct_change_5d": -26.15,
+      "volume": 4520503,
+      "min_vol_3d": 1245635
     },
     {
-      "ticker": "TTMI",
-      "close": 101.77,
-      "close_5d_ago": 144.7,
-      "pct_change_5d": -29.67,
-      "volume": 6651357,
-      "min_vol_3d": 2268117
-    },
-    {
-      "ticker": "SDOT",
-      "close": 14.27,
-      "close_5d_ago": 20.28,
-      "pct_change_5d": -29.64,
-      "volume": 371351,
-      "min_vol_3d": 371351
-    },
-    {
-      "ticker": "OPTX",
-      "close": 5.88,
-      "close_5d_ago": 8.31,
-      "pct_change_5d": -29.3,
-      "volume": 519029,
-      "min_vol_3d": 519029
-    },
-    {
-      "ticker": "IREN",
-      "close": 29.31,
-      "close_5d_ago": 41.28,
-      "pct_change_5d": -29.0,
-      "volume": 71021409,
-      "min_vol_3d": 34868063
-    },
-    {
-      "ticker": "COHR",
-      "close": 222.05,
-      "close_5d_ago": 312.19,
-      "pct_change_5d": -28.87,
-      "volume": 6900607,
-      "min_vol_3d": 4645258
-    },
-    {
-      "ticker": "MOD",
-      "close": 178.04,
-      "close_5d_ago": 249.64,
-      "pct_change_5d": -28.68,
-      "volume": 4761836,
-      "min_vol_3d": 1117655
-    },
-    {
-      "ticker": "COHU",
-      "close": 39.34,
-      "close_5d_ago": 55.01,
-      "pct_change_5d": -28.49,
-      "volume": 1791060,
-      "min_vol_3d": 1128528
-    },
-    {
-      "ticker": "CIFR",
-      "close": 17.69,
-      "close_5d_ago": 24.46,
-      "pct_change_5d": -27.68,
-      "volume": 39794550,
-      "min_vol_3d": 23678364
-    },
-    {
-      "ticker": "CHRN",
-      "close": 18.52,
-      "close_5d_ago": 25.54,
-      "pct_change_5d": -27.49,
-      "volume": 134762,
-      "min_vol_3d": 134762
-    },
-    {
-      "ticker": "BTDR",
-      "close": 8.9,
-      "close_5d_ago": 12.26,
-      "pct_change_5d": -27.41,
-      "volume": 21098149,
-      "min_vol_3d": 7464090
-    },
-    {
-      "ticker": "LITE",
-      "close": 602.35,
-      "close_5d_ago": 829.7,
-      "pct_change_5d": -27.4,
-      "volume": 6388594,
-      "min_vol_3d": 3744225
-    },
-    {
-      "ticker": "LGN",
-      "close": 53.08,
-      "close_5d_ago": 72.87,
-      "pct_change_5d": -27.16,
-      "volume": 2959438,
-      "min_vol_3d": 1199088
-    },
-    {
-      "ticker": "ACMR",
-      "close": 65.3,
-      "close_5d_ago": 89.51,
-      "pct_change_5d": -27.05,
-      "volume": 2095781,
-      "min_vol_3d": 1041890
-    },
-    {
-      "ticker": "EROC",
-      "close": 8.99,
-      "close_5d_ago": 12.32,
-      "pct_change_5d": -27.03,
-      "volume": 1868580,
-      "min_vol_3d": 882653
-    },
-    {
-      "ticker": "CECO",
-      "close": 59.82,
-      "close_5d_ago": 81.82,
-      "pct_change_5d": -26.89,
-      "volume": 2461607,
-      "min_vol_3d": 1207027
-    },
-    {
-      "ticker": "STM",
-      "close": 48.36,
-      "close_5d_ago": 65.77,
-      "pct_change_5d": -26.47,
-      "volume": 13510699,
-      "min_vol_3d": 13510699
-    },
-    {
-      "ticker": "IESC",
-      "close": 496.22,
-      "close_5d_ago": 674.2,
-      "pct_change_5d": -26.4,
-      "volume": 194773,
-      "min_vol_3d": 146300
-    },
-    {
-      "ticker": "CRWV",
-      "close": 60.82,
-      "close_5d_ago": 82.64,
-      "pct_change_5d": -26.4,
-      "volume": 37130113,
-      "min_vol_3d": 17999210
-    },
-    {
-      "ticker": "FORM",
-      "close": 83.45,
-      "close_5d_ago": 113.39,
-      "pct_change_5d": -26.4,
-      "volume": 2478511,
-      "min_vol_3d": 1247271
-    },
-    {
-      "ticker": "GLXY",
-      "close": 18.26,
-      "close_5d_ago": 24.79,
-      "pct_change_5d": -26.34,
-      "volume": 8031688,
-      "min_vol_3d": 4699827
-    },
-    {
-      "ticker": "VPG",
-      "close": 81.26,
-      "close_5d_ago": 110.23,
-      "pct_change_5d": -26.28,
-      "volume": 929253,
-      "min_vol_3d": 462671
-    },
-    {
-      "ticker": "PENG",
-      "close": 43.7,
-      "close_5d_ago": 59.2,
-      "pct_change_5d": -26.18,
-      "volume": 3169397,
-      "min_vol_3d": 2396837
-    },
-    {
-      "ticker": "AMBQ",
-      "close": 57.26,
-      "close_5d_ago": 77.55,
-      "pct_change_5d": -26.16,
-      "volume": 1201920,
-      "min_vol_3d": 649282
-    },
-    {
-      "ticker": "WYFI",
-      "close": 20.58,
-      "close_5d_ago": 27.86,
+      "ticker": "AMKR",
+      "close": 48.26,
+      "close_5d_ago": 65.33,
       "pct_change_5d": -26.13,
-      "volume": 2589608,
-      "min_vol_3d": 1750333
-    },
-    {
-      "ticker": "ONTO",
-      "close": 218.31,
-      "close_5d_ago": 295.25,
-      "pct_change_5d": -26.06,
-      "volume": 2072020,
-      "min_vol_3d": 1048236
-    },
-    {
-      "ticker": "VRT",
-      "close": 223.04,
-      "close_5d_ago": 301.16,
-      "pct_change_5d": -25.94,
-      "volume": 21265717,
-      "min_vol_3d": 5017278
-    },
-    {
-      "ticker": "BW",
-      "close": 7.94,
-      "close_5d_ago": 10.69,
-      "pct_change_5d": -25.72,
-      "volume": 3560384,
-      "min_vol_3d": 3056899
-    },
-    {
-      "ticker": "SIMO",
-      "close": 209.68,
-      "close_5d_ago": 281.68,
-      "pct_change_5d": -25.56,
-      "volume": 1662891,
-      "min_vol_3d": 1427099
-    },
-    {
-      "ticker": "CEVA",
-      "close": 29.84,
-      "close_5d_ago": 40.06,
-      "pct_change_5d": -25.51,
-      "volume": 1447070,
-      "min_vol_3d": 921641
-    },
-    {
-      "ticker": "MKSI",
-      "close": 257.61,
-      "close_5d_ago": 344.84,
-      "pct_change_5d": -25.3,
-      "volume": 2510384,
-      "min_vol_3d": 1391385
-    },
-    {
-      "ticker": "LMND",
-      "close": 47.38,
-      "close_5d_ago": 63.42,
-      "pct_change_5d": -25.29,
-      "volume": 7070290,
-      "min_vol_3d": 933446
-    },
-    {
-      "ticker": "DOCN",
-      "close": 106.76,
-      "close_5d_ago": 142.68,
-      "pct_change_5d": -25.18,
-      "volume": 3266979,
-      "min_vol_3d": 2722945
-    },
-    {
-      "ticker": "BE",
-      "close": 163.75,
-      "close_5d_ago": 218.22,
-      "pct_change_5d": -24.96,
-      "volume": 44264920,
-      "min_vol_3d": 15658375
-    },
-    {
-      "ticker": "VSH",
-      "close": 29.96,
-      "close_5d_ago": 39.89,
-      "pct_change_5d": -24.89,
-      "volume": 6512274,
-      "min_vol_3d": 4352266
-    },
-    {
-      "ticker": "PUMP",
-      "close": 10.21,
-      "close_5d_ago": 13.59,
-      "pct_change_5d": -24.87,
-      "volume": 7844104,
-      "min_vol_3d": 7844104
-    },
-    {
-      "ticker": "FPS",
-      "close": 29.25,
-      "close_5d_ago": 38.87,
-      "pct_change_5d": -24.75,
-      "volume": 13046139,
-      "min_vol_3d": 8405102
-    },
-    {
-      "ticker": "TSEM",
-      "close": 187.84,
-      "close_5d_ago": 249.53,
-      "pct_change_5d": -24.72,
-      "volume": 1916951,
-      "min_vol_3d": 1512241
-    },
-    {
-      "ticker": "SANM",
-      "close": 163.85,
-      "close_5d_ago": 217.36,
-      "pct_change_5d": -24.62,
-      "volume": 1159326,
-      "min_vol_3d": 1159326
-    },
-    {
-      "ticker": "ALAB",
-      "close": 249.74,
-      "close_5d_ago": 330.89,
-      "pct_change_5d": -24.53,
-      "volume": 5367840,
-      "min_vol_3d": 4117470
-    },
-    {
-      "ticker": "MTRN",
-      "close": 189.34,
-      "close_5d_ago": 250.66,
-      "pct_change_5d": -24.46,
-      "volume": 580110,
-      "min_vol_3d": 580110
-    },
-    {
-      "ticker": "SMTC",
-      "close": 103.55,
-      "close_5d_ago": 136.93,
-      "pct_change_5d": -24.38,
-      "volume": 2153124,
-      "min_vol_3d": 2011387
-    },
-    {
-      "ticker": "REA",
-      "close": 9.08,
-      "close_5d_ago": 11.97,
-      "pct_change_5d": -24.14,
-      "volume": 169322,
-      "min_vol_3d": 128046
-    },
-    {
-      "ticker": "STDN",
-      "close": 7.33,
-      "close_5d_ago": 9.65,
-      "pct_change_5d": -24.04,
-      "volume": 738569,
-      "min_vol_3d": 738569
-    },
-    {
-      "ticker": "SHLS",
-      "close": 7.94,
-      "close_5d_ago": 10.43,
-      "pct_change_5d": -23.87,
-      "volume": 6151786,
-      "min_vol_3d": 4021953
-    },
-    {
-      "ticker": "VIAV",
-      "close": 32.23,
-      "close_5d_ago": 42.25,
-      "pct_change_5d": -23.72,
-      "volume": 9776996,
-      "min_vol_3d": 3696770
-    },
-    {
-      "ticker": "FRNM",
-      "close": 10.06,
-      "close_5d_ago": 13.14,
-      "pct_change_5d": -23.44,
-      "volume": 595419,
-      "min_vol_3d": 595419
-    },
-    {
-      "ticker": "PSIX",
-      "close": 25.44,
-      "close_5d_ago": 33.2,
-      "pct_change_5d": -23.37,
-      "volume": 563972,
-      "min_vol_3d": 321404
-    },
-    {
-      "ticker": "ALM",
-      "close": 10.95,
-      "close_5d_ago": 14.29,
-      "pct_change_5d": -23.37,
-      "volume": 10799593,
-      "min_vol_3d": 3995717
-    },
-    {
-      "ticker": "CORZ",
-      "close": 18.12,
-      "close_5d_ago": 23.62,
-      "pct_change_5d": -23.29,
-      "volume": 35537960,
-      "min_vol_3d": 9844611
-    },
-    {
-      "ticker": "SKHY",
-      "close": 126.79,
-      "close_5d_ago": 165.27,
-      "pct_change_5d": -23.28,
-      "volume": 65810026,
-      "min_vol_3d": 50747385
-    },
-    {
-      "ticker": "NVTS",
-      "close": 9.73,
-      "close_5d_ago": 12.67,
-      "pct_change_5d": -23.16,
-      "volume": 21947314,
-      "min_vol_3d": 21947314
-    },
-    {
-      "ticker": "ASX",
-      "close": 31.12,
-      "close_5d_ago": 40.49,
-      "pct_change_5d": -23.14,
-      "volume": 13687529,
-      "min_vol_3d": 8170366
-    },
-    {
-      "ticker": "MU",
-      "close": 739,
-      "close_5d_ago": 959.48,
-      "pct_change_5d": -22.98,
-      "volume": 69845966,
-      "min_vol_3d": 47591161
-    },
-    {
-      "ticker": "PDFS",
-      "close": 41.17,
-      "close_5d_ago": 53.42,
-      "pct_change_5d": -22.93,
-      "volume": 611111,
-      "min_vol_3d": 611111
-    },
-    {
-      "ticker": "APLD",
-      "close": 23.22,
-      "close_5d_ago": 30.08,
-      "pct_change_5d": -22.81,
-      "volume": 31686515,
-      "min_vol_3d": 23738736
-    },
-    {
-      "ticker": "SSTK",
-      "close": 5.7,
-      "close_5d_ago": 7.38,
-      "pct_change_5d": -22.76,
-      "volume": 1186898,
-      "min_vol_3d": 1066057
-    },
-    {
-      "ticker": "AIBZ",
-      "close": 5.33,
-      "close_5d_ago": 6.9,
-      "pct_change_5d": -22.75,
-      "volume": 724793,
-      "min_vol_3d": 675548
-    },
-    {
-      "ticker": "AGL",
-      "close": 92.66,
-      "close_5d_ago": 119.88,
-      "pct_change_5d": -22.71,
-      "volume": 336207,
-      "min_vol_3d": 336207
-    },
-    {
-      "ticker": "METC",
-      "close": 9.63,
-      "close_5d_ago": 12.44,
-      "pct_change_5d": -22.59,
-      "volume": 2629530,
-      "min_vol_3d": 1788775
-    },
-    {
-      "ticker": "LPTH",
-      "close": 9.39,
-      "close_5d_ago": 12.13,
-      "pct_change_5d": -22.59,
-      "volume": 4111540,
-      "min_vol_3d": 1771580
-    },
-    {
-      "ticker": "WULF",
-      "close": 15.09,
-      "close_5d_ago": 19.49,
-      "pct_change_5d": -22.58,
-      "volume": 46572168,
-      "min_vol_3d": 21726832
-    },
-    {
-      "ticker": "POWL",
-      "close": 186.39,
-      "close_5d_ago": 240.68,
-      "pct_change_5d": -22.56,
-      "volume": 1285469,
-      "min_vol_3d": 627827
-    },
-    {
-      "ticker": "MRVL",
-      "close": 163.4,
-      "close_5d_ago": 210.99,
-      "pct_change_5d": -22.56,
-      "volume": 25708856,
-      "min_vol_3d": 21637715
+      "volume": 8645989,
+      "min_vol_3d": 8645989
     },
     {
       "ticker": "RXO",
-      "close": 22.29,
-      "close_5d_ago": 28.7,
-      "pct_change_5d": -22.33,
-      "volume": 1598219,
+      "close": 20.57,
+      "close_5d_ago": 27.77,
+      "pct_change_5d": -25.93,
+      "volume": 3605914,
       "min_vol_3d": 1598219
     },
     {
-      "ticker": "CRDO",
-      "close": 177.45,
-      "close_5d_ago": 228.27,
-      "pct_change_5d": -22.26,
-      "volume": 7010890,
-      "min_vol_3d": 5010002
+      "ticker": "ORN",
+      "close": 9.57,
+      "close_5d_ago": 12.92,
+      "pct_change_5d": -25.93,
+      "volume": 999155,
+      "min_vol_3d": 872285
     },
     {
-      "ticker": "AMD",
-      "close": 429.56,
-      "close_5d_ago": 552.33,
-      "pct_change_5d": -22.23,
-      "volume": 32304898,
-      "min_vol_3d": 31800253
+      "ticker": "VRT",
+      "close": 227.5,
+      "close_5d_ago": 304.04,
+      "pct_change_5d": -25.17,
+      "volume": 14508005,
+      "min_vol_3d": 8157528
     },
     {
-      "ticker": "ENTG",
-      "close": 107.01,
-      "close_5d_ago": 137.48,
+      "ticker": "TDOC",
+      "close": 6.58,
+      "close_5d_ago": 8.66,
+      "pct_change_5d": -24.02,
+      "volume": 26313763,
+      "min_vol_3d": 4873523
+    },
+    {
+      "ticker": "NVCR",
+      "close": 15.23,
+      "close_5d_ago": 19.99,
+      "pct_change_5d": -23.81,
+      "volume": 1414848,
+      "min_vol_3d": 1383902
+    },
+    {
+      "ticker": "CVLG",
+      "close": 36.85,
+      "close_5d_ago": 48.23,
+      "pct_change_5d": -23.6,
+      "volume": 636386,
+      "min_vol_3d": 205406
+    },
+    {
+      "ticker": "ALNY",
+      "close": 205.48,
+      "close_5d_ago": 268.74,
+      "pct_change_5d": -23.54,
+      "volume": 9835843,
+      "min_vol_3d": 1301501
+    },
+    {
+      "ticker": "ZVRA",
+      "close": 9.64,
+      "close_5d_ago": 12.52,
+      "pct_change_5d": -23.0,
+      "volume": 1916691,
+      "min_vol_3d": 1043385
+    },
+    {
+      "ticker": "CEPL",
+      "close": 7.88,
+      "close_5d_ago": 10.16,
+      "pct_change_5d": -22.48,
+      "volume": 296821,
+      "min_vol_3d": 296821
+    },
+    {
+      "ticker": "LII",
+      "close": 417.45,
+      "close_5d_ago": 537.89,
+      "pct_change_5d": -22.39,
+      "volume": 940301,
+      "min_vol_3d": 940301
+    },
+    {
+      "ticker": "MOD",
+      "close": 193.91,
+      "close_5d_ago": 249.62,
+      "pct_change_5d": -22.32,
+      "volume": 5170010,
+      "min_vol_3d": 1729900
+    },
+    {
+      "ticker": "PHAT",
+      "close": 9.03,
+      "close_5d_ago": 11.6,
       "pct_change_5d": -22.16,
-      "volume": 4872974,
-      "min_vol_3d": 2351043
+      "volume": 7620200,
+      "min_vol_3d": 689281
     },
     {
-      "ticker": "RIOT",
-      "close": 18.24,
-      "close_5d_ago": 23.38,
-      "pct_change_5d": -21.98,
-      "volume": 23230895,
-      "min_vol_3d": 13968152
+      "ticker": "IMOS",
+      "close": 47.05,
+      "close_5d_ago": 59.78,
+      "pct_change_5d": -21.29,
+      "volume": 178068,
+      "min_vol_3d": 156679
     },
     {
-      "ticker": "POWI",
-      "close": 56.57,
-      "close_5d_ago": 72.49,
-      "pct_change_5d": -21.96,
-      "volume": 744285,
-      "min_vol_3d": 717235
+      "ticker": "AESI",
+      "close": 10.3,
+      "close_5d_ago": 13.07,
+      "pct_change_5d": -21.19,
+      "volume": 5212261,
+      "min_vol_3d": 4756816
     },
     {
-      "ticker": "SITM",
-      "close": 462.16,
-      "close_5d_ago": 590.67,
-      "pct_change_5d": -21.76,
-      "volume": 512225,
-      "min_vol_3d": 374207
+      "ticker": "SNDK",
+      "close": 1279.96,
+      "close_5d_ago": 1610.33,
+      "pct_change_5d": -20.52,
+      "volume": 24398717,
+      "min_vol_3d": 24398717
     },
     {
-      "ticker": "CLSK",
-      "close": 12.01,
-      "close_5d_ago": 15.32,
-      "pct_change_5d": -21.63,
-      "volume": 24965927,
-      "min_vol_3d": 15985227
+      "ticker": "COHR",
+      "close": 249.06,
+      "close_5d_ago": 313.22,
+      "pct_change_5d": -20.48,
+      "volume": 6356983,
+      "min_vol_3d": 6356983
     },
     {
-      "ticker": "KLIC",
-      "close": 82.86,
-      "close_5d_ago": 105.6,
-      "pct_change_5d": -21.53,
-      "volume": 1833468,
-      "min_vol_3d": 1172401
+      "ticker": "VPG",
+      "close": 87.92,
+      "close_5d_ago": 110.54,
+      "pct_change_5d": -20.46,
+      "volume": 681526,
+      "min_vol_3d": 681526
     },
     {
-      "ticker": "AAUC",
-      "close": 17.03,
-      "close_5d_ago": 21.69,
-      "pct_change_5d": -21.48,
-      "volume": 3192999,
-      "min_vol_3d": 241315
+      "ticker": "TTMI",
+      "close": 115.51,
+      "close_5d_ago": 144.85,
+      "pct_change_5d": -20.26,
+      "volume": 3591463,
+      "min_vol_3d": 3591463
     },
     {
-      "ticker": "INTT",
-      "close": 11.42,
-      "close_5d_ago": 14.54,
-      "pct_change_5d": -21.46,
-      "volume": 222669,
-      "min_vol_3d": 170127
+      "ticker": "ICHR",
+      "close": 74.97,
+      "close_5d_ago": 94.02,
+      "pct_change_5d": -20.26,
+      "volume": 844897,
+      "min_vol_3d": 844897
     },
     {
-      "ticker": "MEI",
-      "close": 12.92,
-      "close_5d_ago": 16.43,
-      "pct_change_5d": -21.36,
-      "volume": 620966,
-      "min_vol_3d": 357326
-    },
-    {
-      "ticker": "ACHC",
-      "close": 27.35,
-      "close_5d_ago": 34.78,
-      "pct_change_5d": -21.36,
-      "volume": 7928588,
-      "min_vol_3d": 4345582
-    },
-    {
-      "ticker": "CRML",
-      "close": 5.13,
-      "close_5d_ago": 6.52,
-      "pct_change_5d": -21.32,
-      "volume": 5147975,
-      "min_vol_3d": 4999238
-    },
-    {
-      "ticker": "ASYS",
-      "close": 13.65,
-      "close_5d_ago": 17.34,
-      "pct_change_5d": -21.28,
-      "volume": 393108,
-      "min_vol_3d": 336977
-    },
-    {
-      "ticker": "MYRG",
-      "close": 322.06,
-      "close_5d_ago": 409.07,
-      "pct_change_5d": -21.27,
-      "volume": 499479,
-      "min_vol_3d": 414507
-    },
-    {
-      "ticker": "VECO",
-      "close": 42.99,
-      "close_5d_ago": 54.6,
-      "pct_change_5d": -21.26,
-      "volume": 1271913,
-      "min_vol_3d": 919152
-    },
-    {
-      "ticker": "MNRO",
-      "close": 13.26,
-      "close_5d_ago": 16.83,
-      "pct_change_5d": -21.24,
-      "volume": 2970735,
-      "min_vol_3d": 655479
-    },
-    {
-      "ticker": "AMAT",
-      "close": 436.45,
-      "close_5d_ago": 553.92,
-      "pct_change_5d": -21.21,
-      "volume": 10166927,
-      "min_vol_3d": 8011383
-    },
-    {
-      "ticker": "SILC",
-      "close": 34.92,
-      "close_5d_ago": 44.28,
-      "pct_change_5d": -21.14,
-      "volume": 423003,
-      "min_vol_3d": 136438
-    },
-    {
-      "ticker": "HQ",
-      "close": 11.55,
-      "close_5d_ago": 14.64,
-      "pct_change_5d": -21.11,
-      "volume": 385776,
-      "min_vol_3d": 237628
-    },
-    {
-      "ticker": "HIMS",
-      "close": 25,
-      "close_5d_ago": 31.68,
-      "pct_change_5d": -21.09,
-      "volume": 29237474,
-      "min_vol_3d": 12836945
-    },
-    {
-      "ticker": "ACLS",
-      "close": 112.05,
-      "close_5d_ago": 141.95,
-      "pct_change_5d": -21.06,
-      "volume": 399238,
-      "min_vol_3d": 399238
-    },
-    {
-      "ticker": "LWLG",
-      "close": 5.34,
-      "close_5d_ago": 6.77,
-      "pct_change_5d": -21.05,
-      "volume": 2575839,
-      "min_vol_3d": 2428815
-    },
-    {
-      "ticker": "LRCX",
-      "close": 252.35,
-      "close_5d_ago": 319.29,
-      "pct_change_5d": -20.97,
-      "volume": 16103109,
-      "min_vol_3d": 14117637
-    },
-    {
-      "ticker": "AMRC",
-      "close": 18.51,
-      "close_5d_ago": 23.39,
-      "pct_change_5d": -20.86,
-      "volume": 700122,
-      "min_vol_3d": 639198
-    },
-    {
-      "ticker": "AAON",
-      "close": 84.87,
-      "close_5d_ago": 107.17,
-      "pct_change_5d": -20.81,
-      "volume": 2026439,
-      "min_vol_3d": 739300
-    },
-    {
-      "ticker": "RDWR",
-      "close": 23.35,
-      "close_5d_ago": 29.47,
-      "pct_change_5d": -20.77,
-      "volume": 605196,
-      "min_vol_3d": 230917
-    },
-    {
-      "ticker": "KLAC",
-      "close": 170.19,
-      "close_5d_ago": 214.69,
-      "pct_change_5d": -20.73,
-      "volume": 20427580,
-      "min_vol_3d": 14202353
-    },
-    {
-      "ticker": "ARM",
-      "close": 224.89,
-      "close_5d_ago": 283.4,
-      "pct_change_5d": -20.65,
-      "volume": 9419109,
-      "min_vol_3d": 5047225
-    },
-    {
-      "ticker": "INIO",
-      "close": 21.77,
-      "close_5d_ago": 27.43,
-      "pct_change_5d": -20.65,
-      "volume": 7349195,
-      "min_vol_3d": 4462587
-    },
-    {
-      "ticker": "AEIS",
-      "close": 252.49,
-      "close_5d_ago": 317.31,
-      "pct_change_5d": -20.43,
-      "volume": 1158861,
-      "min_vol_3d": 511359
-    },
-    {
-      "ticker": "ECG",
-      "close": 109.17,
-      "close_5d_ago": 137.03,
-      "pct_change_5d": -20.33,
-      "volume": 533264,
-      "min_vol_3d": 355606
-    },
-    {
-      "ticker": "FEIM",
-      "close": 57.69,
-      "close_5d_ago": 72.39,
-      "pct_change_5d": -20.31,
-      "volume": 2025859,
-      "min_vol_3d": 325070
-    },
-    {
-      "ticker": "ADTN",
-      "close": 8.33,
-      "close_5d_ago": 10.45,
-      "pct_change_5d": -20.29,
-      "volume": 2601336,
-      "min_vol_3d": 1864535
-    },
-    {
-      "ticker": "AOSL",
-      "close": 27.7,
-      "close_5d_ago": 34.75,
-      "pct_change_5d": -20.29,
-      "volume": 850434,
-      "min_vol_3d": 632021
-    },
-    {
-      "ticker": "TSLA",
-      "close": 298.32,
-      "close_5d_ago": 374.01,
-      "pct_change_5d": -20.24,
-      "volume": 39478039,
-      "min_vol_3d": 39478039
-    },
-    {
-      "ticker": "AMSC",
-      "close": 26.64,
-      "close_5d_ago": 33.4,
-      "pct_change_5d": -20.24,
-      "volume": 1139052,
-      "min_vol_3d": 1083166
-    },
-    {
-      "ticker": "RMBS",
-      "close": 82.81,
-      "close_5d_ago": 103.83,
-      "pct_change_5d": -20.24,
-      "volume": 3998808,
-      "min_vol_3d": 3998808
-    },
-    {
-      "ticker": "INTC",
-      "close": 81.88,
-      "close_5d_ago": 102.62,
-      "pct_change_5d": -20.21,
-      "volume": 152394563,
-      "min_vol_3d": 133247260
-    },
-    {
-      "ticker": "WERN",
-      "close": 36.65,
-      "close_5d_ago": 45.82,
-      "pct_change_5d": -20.01,
-      "volume": 3167733,
-      "min_vol_3d": 1459114
+      "ticker": "LGN",
+      "close": 59.81,
+      "close_5d_ago": 74.87,
+      "pct_change_5d": -20.11,
+      "volume": 3046610,
+      "min_vol_3d": 2002757
     }
   ]
 }
