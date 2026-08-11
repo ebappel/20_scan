@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Growth Screen — 39% Sales Growth</title>
+<style>
+  :root {
+    --bg: #0b0b0d;
+    --grid: #1a1a1e;
+    --edge: #26262c;
+    --text: #dcdce0;
+    --dim: #70707a;
+    --up: #26a65b;
+    --down: #e04c4c;
+    --bull: #4ade80;
+    --accent: #38bdf8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 13px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  header {
+    display: flex; align-items: baseline; gap: 18px; flex-wrap: wrap;
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--edge);
+    position: sticky; top: 0; background: var(--bg); z-index: 5;
+  }
+  h1 {
+    margin: 0; font-size: 14px; font-weight: 600;
+    letter-spacing: .04em; color: var(--accent);
+  }
+  .stat { color: var(--dim); white-space: nowrap; }
+  .stat b { color: var(--text); font-weight: 600; }
+  .spacer { flex: 1; }
+  a.nav {
+    color: var(--dim); text-decoration: none;
+    border-bottom: 1px solid transparent; padding-bottom: 1px;
+  }
+  a.nav:hover, a.nav:focus-visible { color: var(--accent); border-color: var(--accent); }
+
+  .criteria {
+    padding: 8px 14px; color: var(--dim);
+    border-bottom: 1px solid var(--edge); font-size: 12px;
+  }
+  .criteria span { margin-right: 20px; white-space: nowrap; }
+
+  h2 {
+    margin: 26px 14px 8px; font-size: 12px; font-weight: 600;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--dim);
+  }
+  h2 .count { color: var(--text); }
+
+  .wrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 12px; }
+  th, td {
+    padding: 6px 10px; text-align: right;
+    border-bottom: 1px solid var(--grid); white-space: nowrap;
+  }
+  th {
+    position: sticky; top: 37px; background: var(--bg);
+    color: var(--dim); font-weight: 600; cursor: pointer;
+    border-bottom: 1px solid var(--edge); user-select: none;
+  }
+  th:hover, th:focus-visible { color: var(--accent); }
+  th[aria-sort]:not([aria-sort="none"]) { color: var(--accent); }
+  th.l, td.l { text-align: left; }
+  tbody tr:hover { background: #131317; }
+  .tk { color: var(--accent); font-weight: 600; }
+  .nm { color: var(--dim); max-width: 260px; overflow: hidden;
+        text-overflow: ellipsis; }
+  .pos { color: var(--bull); }
+  .neg { color: var(--down); }
+
+  /* Two bars per row: prior quarter, then latest. Reading them
+     left to right shows whether growth is accelerating. */
+  .pace { display: inline-flex; gap: 3px; align-items: flex-end;
+          height: 18px; vertical-align: middle; }
+  .pace i {
+    display: block; width: 7px; background: var(--up);
+    border-radius: 1px 1px 0 0; min-height: 2px;
+  }
+  .pace i.later { background: var(--bull); }
+
+  .msg { padding: 40px 14px; color: var(--dim); }
+  .msg b { color: var(--text); display: block; margin-bottom: 6px;
+           font-weight: 600; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>GROWTH SCREEN</h1>
+  <span class="stat">quarters <b id="qtrs">—</b></span>
+  <span class="stat">prices <b id="pxdate">—</b></span>
+  <span class="stat">matches <b id="total">—</b></span>
+  <span class="spacer"></span>
+  <a class="nav" href="index.html">← breadth chart</a>
+</header>
+
+<div class="criteria">
+  <span>avg sales growth ≥ 39% over 2 quarters, each vs. the year-ago quarter</span>
+  <span>market cap &lt; $10B</span>
+  <span>listed within 10 years</span>
+</div>
+
+<div id="body">
+  <div class="msg"><b>Loading</b>Reading the latest scan results.</div>
+</div>
+
+<script>
+const F = {
+  cap: v => v >= 1e9 ? "$" + (v / 1e9).toFixed(2) + "B"
+                     : "$" + (v / 1e6).toFixed(0) + "M",
+  rev: v => v >= 1e9 ? "$" + (v / 1e9).toFixed(2) + "B"
+                     : "$" + (v / 1e6).toFixed(1) + "M",
+  pct: v => (v >= 0 ? "+" : "") + (v * 100).toFixed(0) + "%",
+  px:  v => "$" + v.toFixed(2)
+};
+
+const COLS = [
+  { k: "ticker",        h: "Ticker",  l: 1, f: (v, r) => `<span class="tk">${v}</span>` },
+  { k: "name",          h: "Company", l: 1, cls: "nm" },
+  { k: "avg_growth",    h: "Avg growth", f: v => `<span class="pos">${F.pct(v)}</span>` },
+  { k: "_pace",         h: "Pace",    sort: r => r.growth_latest - r.growth_prev },
+  { k: "growth_prev",   h: "Prior Q", f: v => `<span class="${v >= 0 ? 'pos' : 'neg'}">${F.pct(v)}</span>` },
+  { k: "growth_latest", h: "Latest Q", f: v => `<span class="${v >= 0 ? 'pos' : 'neg'}">${F.pct(v)}</span>` },
+  { k: "rev_latest",    h: "Latest rev", f: F.rev },
+  { k: "market_cap",    h: "Mkt cap",  f: F.cap },
+  { k: "price",         h: "Price",    f: F.px },
+  { k: "list_date",     h: "Listed",   l: 1 },
+  { k: "years_listed",  h: "Yrs",      f: v => v == null ? "—" : v.toFixed(1) }
+];
+
+function paceBars(r) {
+  const peak = Math.max(r.growth_prev, r.growth_latest, 0.4);
+  const h = g => Math.max(2, Math.round(Math.max(g, 0) / peak * 18));
+  return `<span class="pace" title="prior quarter then latest quarter">`
+       + `<i style="height:${h(r.growth_prev)}px"></i>`
+       + `<i class="later" style="height:${h(r.growth_latest)}px"></i></span>`;
+}
+
+function table(rows, id) {
+  const head = COLS.map((c, i) =>
+    `<th class="${c.l ? 'l' : ''}" tabindex="0" data-i="${i}" aria-sort="none">${c.h}</th>`
+  ).join("");
+  const body = rows.map(r => "<tr>" + COLS.map(c => {
+    if (c.k === "_pace") return `<td>${paceBars(r)}</td>`;
+    const v = r[c.k];
+    const shown = v == null || v === "" ? "—" : (c.f ? c.f(v, r) : v);
+    return `<td class="${c.l ? 'l' : ''} ${c.cls || ''}">${shown}</td>`;
+  }).join("") + "</tr>").join("");
+  return `<div class="wrap"><table id="${id}"><thead><tr>${head}</tr></thead>`
+       + `<tbody>${body}</tbody></table></div>`;
+}
+
+function wireSort(tableEl, rows, id) {
+  let lastCol = -1, desc = true;
+  tableEl.querySelectorAll("th").forEach(th => {
+    const go = () => {
+      const i = +th.dataset.i, c = COLS[i];
+      desc = i === lastCol ? !desc : true;
+      lastCol = i;
+      const key = c.sort || (r => r[c.k]);
+      const sorted = rows.slice().sort((a, b) => {
+        const x = key(a), y = key(b);
+        if (x == null) return 1;
+        if (y == null) return -1;
+        return typeof x === "string" ? (desc ? y.localeCompare(x) : x.localeCompare(y))
+                                     : (desc ? y - x : x - y);
+      });
+      tableEl.parentElement.outerHTML = table(sorted, id);
+      wireSort(document.getElementById(id), sorted, id);
+      const fresh = document.getElementById(id).querySelectorAll("th")[i];
+      fresh.setAttribute("aria-sort", desc ? "descending" : "ascending");
+    };
+    th.addEventListener("click", go);
+    th.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); }
+    });
+  });
+}
+
+fetch("output/growth_screen.json?" + Date.now())
+  .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+  .then(d => {
+    const m = d.meta;
+    document.getElementById("qtrs").textContent =
+      m.quarter_latest + " / " + m.quarter_prev;
+    document.getElementById("pxdate").textContent = m.price_date;
+    document.getElementById("total").textContent = d.passing.length;
+
+    let html = "";
+    if (d.passing.length) {
+      html += `<h2>Matches <span class="count">${d.passing.length}</span></h2>`
+            + table(d.passing, "t-pass");
+    } else {
+      html += `<div class="msg"><b>No matches this run</b>`
+            + `Nothing cleared all three filters. Loosen the growth `
+            + `threshold in growth_scan.py to widen the net.</div>`;
+    }
+    if (d.pending.length) {
+      html += `<h2>Awaiting listing date <span class="count">${d.pending.length}</span></h2>`
+            + `<div class="criteria">These cleared growth and market cap. `
+            + `Their listing dates fill in over the next few runs.</div>`
+            + table(d.pending, "t-pend");
+    }
+    document.getElementById("body").innerHTML = html;
+
+    if (d.passing.length) wireSort(document.getElementById("t-pass"), d.passing, "t-pass");
+    if (d.pending.length) wireSort(document.getElementById("t-pend"), d.pending, "t-pend");
+  })
+  .catch(err => {
+    document.getElementById("body").innerHTML =
+      `<div class="msg"><b>No results file yet</b>`
+      + `growth_screen.json is missing from the output folder. `
+      + `Run the Growth Screen workflow in the Actions tab, then reload. `
+      + `(${err.message})</div>`;
+  });
+</script>
+</body>
+</html>
